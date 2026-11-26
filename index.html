@@ -1,0 +1,1605 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MyXinyuan</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#bd1d2b">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="MyXinyuan">
+  <style>
+    /* ===== WARNA ===== */
+    /* --latar = warna latar halaman (dari logo). Ganti di sini saja kalau perlu. */
+    :root {
+      --merek:#c8202c; --merek2:#9c141f; --oranye:#e77b24; --latar:#bd1d2b;
+      --tinta:#1f1a1b; --redup:#6b6264; --garis:#e7dfdf; --isian:#f6f2f1;
+      --ok:#1b7f4b; --gagal:#b42318; --mode:#e77b24; --biru:#1565c0; --ungu:#6a3fb5;
+      --kaca:rgba(255,255,255,.14); --garisKaca:rgba(255,255,255,.28);
+    }
+    body.mode-masuk { --mode:#1b7f4b; }
+    body.mode-sales { --mode:#1565c0; }
+    body.mode-riwayat { --mode:#2b2425; }
+    body.mode-pantau { --mode:#6a3fb5; }
+    * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+    /* ===== LATAR: gradasi logo + dua cahaya yang bergerak pelan ===== */
+    html { background:var(--latar); }
+    body { margin:0; min-height:100vh; overflow-x:hidden; font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif; color:var(--tinta);
+           background:var(--latar) radial-gradient(circle at 0 0, #e77b24 0, #cf4428 260px, #bd1d2b 560px) no-repeat; }
+    body::before, body::after { content:""; position:fixed; z-index:-1; border-radius:50%; filter:blur(60px); pointer-events:none; }
+    body::before { width:320px; height:320px; top:-80px; right:-120px; background:rgba(255,170,90,.45); animation:melayang 16s ease-in-out infinite alternate; }
+    body::after { width:360px; height:360px; bottom:-140px; left:-140px; background:rgba(120,10,25,.55); animation:melayang 20s ease-in-out infinite alternate-reverse; }
+    @keyframes melayang { from { transform:translate(0,0) scale(1); } to { transform:translate(-40px,60px) scale(1.15); } }
+
+    /* ===== KEPALA ===== */
+    #kepala { display:flex; align-items:center; gap:12px; max-width:460px; margin:0 auto; padding:16px 18px 6px; color:#fff; }
+    #kepala img { width:42px; height:42px; border-radius:12px; display:block; box-shadow:0 4px 14px rgba(0,0,0,.3); }
+    #kepala span { font-size:21px; font-weight:800; letter-spacing:.4px; }
+    #inisial { margin-left:auto; width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:15px; color:#fff;
+               background:var(--kaca); border:1px solid var(--garisKaca); -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px); }
+    main { max-width:460px; margin:0 auto; padding:14px 18px 48px; }
+
+    /* ===== MUNCUL HALUS saat pindah halaman ===== */
+    .muncul { animation:naik .35s cubic-bezier(.2,.8,.2,1) both; }
+    @keyframes naik { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:none; } }
+
+    /* ===== TEKS & KARTU ===== */
+    h1 { font-size:24px; margin:6px 0 6px; letter-spacing:-.2px; }
+    .sub { margin:0 0 10px; color:var(--redup); }
+    .lencana { display:inline-block; vertical-align:middle; margin-left:10px; padding:4px 11px; border-radius:999px; font-size:11px; font-weight:800; letter-spacing:.8px; color:#fff; background:var(--mode); box-shadow:0 0 0 4px color-mix(in srgb, var(--mode) 18%, transparent); }
+    .kartu { position:relative; background:rgba(255,255,255,.96); border-radius:24px; padding:16px 18px 20px; border:1px solid rgba(255,255,255,.7);
+             box-shadow:0 20px 40px -12px rgba(60,0,10,.45), 0 2px 6px rgba(0,0,0,.06); }
+    .kartu::before { content:""; position:absolute; left:24px; right:24px; top:0; height:3px; border-radius:0 0 4px 4px; background:linear-gradient(90deg, transparent, var(--mode), transparent); }
+
+    /* ===== ISIAN ===== */
+    label { display:block; font-weight:700; font-size:14px; margin:16px 0 7px; color:#3a3233; }
+    input, textarea, select { width:100%; font-size:17px; padding:13px 14px; border:1.5px solid transparent; border-radius:14px; background:var(--isian); color:var(--tinta); font-family:inherit; transition:border-color .2s, box-shadow .2s, background .2s; }
+    textarea { min-height:84px; resize:vertical; }
+    select { -webkit-appearance:none; appearance:none; padding-right:40px;
+             background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236b6264' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+             background-repeat:no-repeat; background-position:right 14px center; }
+    input:focus, textarea:focus, select:focus { outline:none; background-color:#fff; border-color:var(--oranye); box-shadow:0 0 0 4px rgba(231,123,36,.18); }
+    button:focus-visible { outline:3px solid #ffd2a8; outline-offset:2px; }
+
+    /* ===== TOMBOL ===== */
+    button { font-size:17px; font-weight:700; padding:15px; border:0; border-radius:14px; color:#fff; cursor:pointer; font-family:inherit;
+             background:linear-gradient(135deg, #e77b24 0%, #d23a29 55%, #b81a2a 100%); box-shadow:0 8px 18px -6px rgba(200,32,44,.6);
+             transition:transform .12s, box-shadow .2s, filter .2s; }
+    button:hover { filter:brightness(1.06); }
+    button:active { transform:scale(.97); }
+    button:disabled { opacity:.6; cursor:wait; transform:none; }
+    button.sekunder { background:#241d1e; box-shadow:0 6px 14px -6px rgba(0,0,0,.5); }
+    button.kembali { background:none; box-shadow:none; color:var(--redup); padding:6px 0; font-size:15px; font-weight:600; text-decoration:underline; }
+    .penuh { width:100%; margin-top:22px; }
+
+    /* Tab bergaya "segmented" */
+    .tabs { display:flex; gap:4px; margin:6px 0 12px; padding:4px; border-radius:16px; background:var(--isian); }
+    .tab { flex:1; padding:11px 6px; font-size:14px; border-radius:12px; background:transparent; color:var(--redup); box-shadow:none; }
+    .tab:hover { filter:none; color:var(--tinta); }
+    .tab.aktif { background:var(--mode); color:#fff; box-shadow:0 6px 14px -6px color-mix(in srgb, var(--mode) 80%, transparent); }
+
+    .baris { display:flex; gap:8px; }
+    .baris input { flex:1; }
+    .kolomAkses { position:relative; }
+    .kolomAkses input { padding-right:56px; }
+    button.mata { position:absolute; right:4px; top:50%; transform:translateY(-50%); width:46px; height:46px; padding:0; display:flex; align-items:center; justify-content:center; background:none; box-shadow:none; color:var(--redup); }
+    button.mata:active { transform:translateY(-50%) scale(.95); }
+
+    /* Baris atas di dalam menu: tombol kembali berbentuk kaca */
+    #bar { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+    #tombolKembali { display:flex; align-items:center; gap:6px; padding:9px 14px 9px 10px; font-size:14px; font-weight:700; border-radius:999px; color:#fff; text-decoration:none;
+                     background:var(--kaca); border:1px solid var(--garisKaca); box-shadow:none; -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px); }
+    #sapaan { font-weight:700; color:#fff; font-size:14px; opacity:.9; }
+
+    #areaScan { margin-top:10px; border-radius:14px; overflow:hidden; }
+    #kartuPart { margin-top:12px; padding:14px; background:var(--isian); border-left:5px solid var(--mode); border-radius:14px; }
+    #kartuPart strong { display:block; font-size:19px; }
+    #kartuPart span { color:var(--redup); font-size:14px; }
+    #previewFoto { display:block; max-width:100%; max-height:220px; margin-top:10px; border-radius:14px; }
+    #infoLokasi { margin:8px 0 0; font-size:14px; color:var(--ok); font-weight:700; }
+    #pesan { margin-top:16px; padding:13px 15px; border-radius:16px; font-weight:700; box-shadow:0 10px 24px -10px rgba(0,0,0,.35); }
+    #pesan.sukses { background:#e3f6ec; color:var(--ok); }
+    #pesan.gagal { background:#fdeae7; color:var(--gagal); }
+    #infoDemo { margin:0 0 12px; padding:10px 12px; border-radius:12px; background:#fff4e5; color:#8a4b0b; font-size:14px; line-height:1.5; }
+    .catatan { margin:14px 0 0; font-size:13px; color:var(--redup); }
+
+    /* ===== LOGIN ===== */
+    .sambutan { margin:18px 4px 18px; color:#fff; }
+    .sambutan b { display:block; font-size:30px; line-height:1.15; letter-spacing:-.5px; }
+    .sambutan span { opacity:.85; }
+
+    /* ===== BERANDA ===== */
+    #kartuUser { position:relative; overflow:hidden; border-radius:26px; padding:20px; color:#fff;
+                 background:linear-gradient(140deg, rgba(40,20,22,.72), rgba(20,10,12,.55)); border:1px solid rgba(255,255,255,.16);
+                 -webkit-backdrop-filter:blur(18px); backdrop-filter:blur(18px); box-shadow:0 24px 40px -16px rgba(40,0,8,.6); }
+    #kartuUser::after { content:""; position:absolute; width:220px; height:220px; right:-70px; top:-90px; border-radius:50%;
+                        background:radial-gradient(circle, rgba(231,123,36,.55), transparent 65%); }
+    #kartuUser .kecil { margin:0; font-size:13px; letter-spacing:.3px; opacity:.75; }
+    #kartuUser .besar { margin:6px 0 14px; font-size:26px; font-weight:800; letter-spacing:-.3px; }
+    .chip { display:inline-block; margin:0 6px 6px 0; padding:5px 12px; border-radius:999px; font-size:12px; font-weight:800; letter-spacing:.6px; }
+    .chip.merah { background:linear-gradient(135deg, #e77b24, #c8202c); color:#fff; }
+    .chip.garis { border:1px solid rgba(255,255,255,.5); color:#fff; }
+    .chip.abu { background:#efeaea; color:var(--tinta); font-weight:700; letter-spacing:0; }
+    .judulBagian { margin:24px 2px 12px; font-size:13px; font-weight:800; letter-spacing:1.2px; text-transform:uppercase; }
+    #vBeranda .judulBagian { color:rgba(255,255,255,.85); }
+    .vPantauJudul { text-transform:none; letter-spacing:0; font-size:16px; }
+
+    /* Kotak menu dari kaca */
+    .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+    .ubin { display:flex; flex-direction:column; align-items:center; gap:10px; padding:18px 6px 16px; border-radius:22px; font-size:13.5px; font-weight:700; line-height:1.25; color:#fff;
+            background:var(--kaca); border:1px solid var(--garisKaca); -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px);
+            box-shadow:0 12px 24px -14px rgba(40,0,8,.7), inset 0 1px 0 rgba(255,255,255,.25); animation:naik .45s cubic-bezier(.2,.8,.2,1) both; }
+    .ubin:hover { filter:none; background:rgba(255,255,255,.2); }
+    .ubin:nth-child(2) { animation-delay:.05s; } .ubin:nth-child(3) { animation-delay:.1s; }
+    .ubin:nth-child(4) { animation-delay:.15s; } .ubin:nth-child(5) { animation-delay:.2s; }
+    .ikonBulat { width:54px; height:54px; border-radius:18px; display:flex; align-items:center; justify-content:center; flex-shrink:0; color:#c8202c;
+                 background:linear-gradient(160deg, #fff 0%, #ffe9dc 100%); box-shadow:0 8px 18px -6px rgba(0,0,0,.35), 0 0 0 4px rgba(255,255,255,.12); }
+    #tombolLogout { display:block; margin:30px auto 0; color:rgba(255,255,255,.85); }
+
+    /* ===== DAFTAR ===== */
+    .daftar { list-style:none; margin:0; padding:0; }
+    .item { padding:13px 4px; border-bottom:1px solid var(--garis); }
+    .item:last-child { border-bottom:0; }
+    .itemAtas { display:flex; justify-content:space-between; align-items:center; gap:8px; font-size:12.5px; color:var(--redup); }
+    .itemJudul { margin:6px 0 2px; font-size:16.5px; font-weight:800; }
+    .itemIsi { margin:0; font-size:14px; color:var(--redup); line-height:1.45; }
+    .jenis { padding:3px 9px; border-radius:999px; font-size:10.5px; font-weight:800; letter-spacing:.6px; color:#fff; }
+    .jenis.Keluar { background:var(--oranye); }
+    .jenis.Masuk { background:#1b7f4b; }
+    .angka { font-weight:800; color:var(--tinta); }
+    .kosong { padding:20px 0; text-align:center; color:var(--redup); }
+    .muat { width:100%; margin-top:8px; background:var(--isian); color:var(--tinta); box-shadow:none; font-size:15px; }
+
+    /* ===== PALING BANYAK KELUAR ===== */
+    .peringkat { display:flex; gap:12px; align-items:center; padding:12px 2px; border-bottom:1px solid var(--garis); }
+    .peringkat:last-child { border-bottom:0; }
+    .nomor { width:36px; height:36px; border-radius:12px; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-weight:800; background:var(--isian); color:var(--tinta); }
+    .peringkat:nth-child(1) .nomor { background:linear-gradient(135deg,#ffb347,#e77b24); color:#fff; box-shadow:0 6px 14px -6px #e77b24; }
+    .peringkat:nth-child(2) .nomor { background:linear-gradient(135deg,#bdb5b6,#8a8284); color:#fff; }
+    .peringkat:nth-child(3) .nomor { background:linear-gradient(135deg,#d39a6a,#a0683a); color:#fff; }
+    .isiPeringkat { flex:1; min-width:0; }
+    .isiPeringkat .itemJudul { margin:0 0 2px; font-size:15.5px; }
+    .batang { height:7px; margin-top:7px; border-radius:99px; background:var(--isian); overflow:hidden; }
+    .batang span { display:block; height:100%; border-radius:99px; background:linear-gradient(90deg,#e77b24,#c8202c); }
+    .totalPart { text-align:right; font-size:12px; color:var(--redup); }
+    .totalPart b { display:block; font-size:22px; color:var(--tinta); }
+
+    /* ===== PANTAU SALES ===== */
+    .kartuSales { margin-top:12px; padding:14px; border-radius:18px; background:linear-gradient(135deg, #f6f1fd, #faf7f6); border:1px solid #ece4f8; }
+    .kartuSales h2 { margin:0 0 10px; font-size:17px; }
+    .statistik { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:10px; }
+    .stat { padding:10px 6px; border-radius:14px; background:#fff; text-align:center; box-shadow:0 4px 10px -6px rgba(106,63,181,.35); }
+    .stat b { display:block; font-size:24px; color:var(--ungu); }
+    .stat span { font-size:12px; color:var(--redup); }
+
+    /* ===== STATUS CUSTOMER ===== */
+    .st { display:inline-block; padding:3px 9px; border-radius:999px; font-size:10.5px; font-weight:800; letter-spacing:.6px; color:#fff; white-space:nowrap; }
+    .st-Cold { background:#4a7fd4; }
+    .st-Warm { background:var(--oranye); }
+    .st-Hot { background:linear-gradient(135deg,#ff5a3c,#c8202c); }
+    .st-Deal { background:#1b7f4b; }
+    .st-Batal { background:#8a8284; }
+    .st-Belum { background:#e4dede; color:var(--tinta); }
+    .kotakStatus { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:12px; }
+    .kotakSt { padding:10px 4px; border-radius:14px; background:var(--isian); color:var(--tinta); box-shadow:none; border:1.5px solid transparent; text-align:center; font-size:12.5px; font-weight:700; }
+    .kotakSt b { display:block; font-size:22px; }
+    .kotakSt.aktif { border-color:var(--ungu); background:#f3effa; color:var(--ungu); }
+    .info { margin:8px 0 0; font-size:13px; color:var(--redup); }
+    .item.bisaKlik { cursor:pointer; }
+    .jejak { margin:10px 0 0; padding:10px 12px; list-style:none; border-radius:14px; background:var(--isian); font-size:14px; }
+    .jejak li { display:flex; gap:8px; align-items:center; padding:4px 0; }
+    .jejak .tgl { min-width:82px; color:var(--redup); font-size:13px; }
+    .panah { float:right; color:var(--redup); font-size:13px; }
+
+    /* ===== UNIT & ATTACHMENT ===== */
+    body.mode-katalog { --mode:#c8202c; }
+    .infoContoh { margin:0 0 10px; padding:9px 12px; border-radius:12px; background:#fff4e5; color:#8a4b0b; font-size:13px; font-weight:700; }
+    .filterChip { display:flex; gap:6px; overflow-x:auto; padding-bottom:4px; margin-bottom:10px; scrollbar-width:none; }
+    .filterChip::-webkit-scrollbar { display:none; }
+    .filterChip button { flex-shrink:0; padding:8px 14px; font-size:13px; border-radius:999px; background:var(--isian); color:var(--redup); box-shadow:none; }
+    .filterChip button.aktif { background:var(--tinta); color:#fff; }
+    .daftarKatalog { list-style:none; margin:12px 0 0; padding:0; display:grid; gap:10px; }
+    .kartuUnit { display:flex; gap:12px; align-items:center; padding:10px; border-radius:18px; background:var(--isian); cursor:pointer; transition:transform .12s; }
+    .kartuUnit:active { transform:scale(.98); }
+    .kartuUnit img { width:92px; height:70px; object-fit:cover; border-radius:12px; background:#fff; flex-shrink:0; }
+    .kartuUnit .isi { flex:1; min-width:0; }
+    .kartuUnit b { display:block; font-size:16.5px; }
+    .kartuUnit small { display:block; margin-top:3px; color:var(--redup); font-size:13px; line-height:1.35; }
+    .statusUnit { display:inline-block; padding:3px 9px; border-radius:999px; font-size:10.5px; font-weight:800; letter-spacing:.6px; color:#fff; background:#1b7f4b; }
+    .statusUnit.Inden { background:#8a8284; }
+    .statusUnit:empty { display:none; }
+    .kembaliDaftar { display:inline-flex; align-items:center; gap:6px; padding:8px 12px 8px 8px; margin-bottom:12px; font-size:14px; border-radius:999px; background:var(--isian); color:var(--tinta); box-shadow:none; }
+    .fotoDetail { position:relative; }
+    .fotoDetail img { display:block; width:100%; aspect-ratio:16/10; object-fit:cover; border-radius:18px; background:var(--isian); }
+    .fotoDetail .statusUnit { position:absolute; top:12px; left:12px; font-size:12px; padding:5px 12px; }
+    #namaDetail { margin-top:14px; }
+    .spek { display:grid; grid-template-columns:auto 1fr; margin:0; border-radius:14px; overflow:hidden; background:var(--isian); }
+    .spek dt, .spek dd { margin:0; padding:10px 12px; font-size:14px; border-bottom:1px solid #fff; }
+    .spek dt { color:var(--redup); }
+    .spek dd { font-weight:700; text-align:right; }
+    .terkait { display:flex; flex-wrap:wrap; gap:8px; }
+    .terkait button { padding:9px 14px; font-size:14px; border-radius:999px; background:#fff; color:var(--merek); border:1.5px solid #f1c9cc; box-shadow:none; }
+    .daftarLampiran { list-style:none; margin:0; padding:0; display:grid; gap:8px; }
+    .daftarLampiran a { display:flex; align-items:center; gap:12px; padding:12px; border-radius:14px; background:var(--isian); color:var(--tinta); text-decoration:none; font-weight:700; }
+    .daftarLampiran a span.jenisLampiran { width:40px; height:40px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; color:#fff; background:linear-gradient(135deg,#e77b24,#c8202c); flex-shrink:0; }
+    .daftarLampiran a small { display:block; font-weight:500; color:var(--redup); font-size:12.5px; }
+
+    /* ===== FOTO KUNJUNGAN ===== */
+    .tersembunyi { position:absolute; width:1px; height:1px; opacity:0; pointer-events:none; }
+    label.tombolFoto { display:flex; align-items:center; justify-content:center; gap:10px; margin:0; padding:15px; border-radius:14px; cursor:pointer;
+                       font-size:17px; font-weight:700; color:#fff; background:#241d1e; box-shadow:0 6px 14px -6px rgba(0,0,0,.5); }
+    label.tombolFoto:active { transform:scale(.97); }
+    .pratinjauCap { display:block; width:100%; margin-top:12px; border-radius:16px; box-shadow:0 10px 24px -12px rgba(0,0,0,.5); }
+    .berhasil { margin:4px 0 0; padding:12px 14px; border-radius:14px; background:#e3f6ec; color:var(--ok); font-weight:800; }
+    button.tombolIkon { display:flex; align-items:center; justify-content:center; gap:10px; }
+    #simpanFotoForm { margin-top:10px; }
+    button.tombolWA { display:flex; align-items:center; justify-content:center; gap:10px; background:linear-gradient(135deg,#25d366,#128c4a); box-shadow:0 8px 18px -6px rgba(18,140,74,.6); }
+
+    /* Kalau HP diatur "kurangi gerakan", animasi dimatikan */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation:none !important; transition:none !important; }
+    }
+    [hidden] { display:none !important; }
+  </style>
+</head>
+<body>
+<header id="kepala"><img src="icon-192.png" alt=""><span>MyXinyuan</span><div id="inisial" hidden></div></header>
+<main>
+  <div id="bar" hidden>
+    <button id="tombolKembali" type="button"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Beranda</button>
+    <span id="sapaan"></span>
+  </div>
+
+  <!-- LOGIN: cukup sekali per HP, kode langsung tersimpan -->
+  <div id="vLoginWrap">
+  <div class="sambutan"><b>Selamat datang</b><span>Gudang dan sales dalam satu aplikasi.</span></div>
+  <section id="vLogin" class="kartu">
+    <h1>Masuk</h1>
+    <p class="sub">Cukup sekali. Setelah ini HP langsung masuk sendiri.</p>
+    <p id="infoDemo" hidden>MODE DEMO, data palsu. Coba kode: <b>semua</b> (semua menu), <b>mekanik</b> (gudang saja), atau <b>sales</b> (sales saja).</p>
+    <label for="inputAkses">Kode akses</label>
+    <div class="kolomAkses">
+      <input id="inputAkses" type="password" autocomplete="off">
+      <button id="tombolMata" class="mata" type="button" aria-label="Tampilkan kode akses" aria-pressed="false">
+        <svg id="ikonBuka" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+        <svg id="ikonTutup" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 19c-7 0-11-7-11-7a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+      </button>
+    </div>
+    <button id="tombolLogin" class="penuh" type="button">Masuk</button>
+  </section>
+  </div>
+
+  <!-- BERANDA -->
+  <section id="vBeranda" hidden>
+    <div id="kartuUser">
+      <p class="kecil" id="tanggalHariIni"></p>
+      <p class="besar" id="namaUser"></p>
+      <div id="chipPeran"></div>
+    </div>
+    <p class="judulBagian">Menu</p>
+    <div class="grid">
+      <button id="ubinKeluar" class="ubin" type="button">
+        <span class="ikonBulat oranye"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 8v13H3V8"/><path d="M1 3h22v5H1z"/><path d="M12 18v-7"/><path d="M9 14l3-3 3 3"/></svg></span>
+        Barang Keluar
+      </button>
+      <button id="ubinMasuk" class="ubin" type="button">
+        <span class="ikonBulat hijau"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 8v13H3V8"/><path d="M1 3h22v5H1z"/><path d="M12 11v7"/><path d="M9 15l3 3 3-3"/></svg></span>
+        Barang Masuk
+      </button>
+      <button id="ubinRiwayat" class="ubin" type="button">
+        <span class="ikonBulat gelap"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+        Riwayat Gudang
+      </button>
+      <button id="ubinSales" class="ubin" type="button">
+        <span class="ikonBulat biru"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
+        Kunjungan Sales
+      </button>
+      <button id="ubinPantau" class="ubin" type="button">
+        <span class="ikonBulat ungu"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg></span>
+        Pantau Sales
+      </button>
+      <button id="ubinKatalog" class="ubin" type="button">
+        <span class="ikonBulat"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="18" r="2"/><circle cx="14" cy="18" r="2"/><path d="M3 15h14v-4h-5V8H8v3H3z"/><path d="M12 8l5-5 4 4-2 2"/><path d="M19 9v3"/></svg></span>
+        Unit &amp; Attachment
+      </button>
+    </div>
+    <button id="tombolLogout" class="kembali" type="button">Keluar dari akun ini</button>
+  </section>
+
+  <!-- MODUL SPAREPART -->
+  <section id="vSparepart" class="kartu" hidden>
+    <h1><span id="judulSp">Barang Keluar</span><span id="lencanaSp" class="lencana">KELUAR</span></h1>
+    <div id="tabs" class="tabs" hidden>
+      <button id="tabKeluar" class="tab aktif" type="button">Barang Keluar</button>
+      <button id="tabMasuk" class="tab" type="button">Barang Masuk</button>
+    </div>
+    <label for="kode">Kode part</label>
+    <div class="baris">
+      <input id="kode" type="text" autocapitalize="characters" autocomplete="off" placeholder="Scan atau ketik kode">
+      <button id="tombolScan" class="sekunder" type="button">Scan</button>
+    </div>
+    <div id="areaScan" hidden></div>
+    <div id="kartuPart" hidden><strong id="namaPart"></strong><span id="stokPart"></span></div>
+    <label for="jumlah" id="labelJumlah">Jumlah keluar</label>
+    <input id="jumlah" type="number" inputmode="numeric" min="1" step="1" value="1">
+    <label for="customer" id="labelCustomer">Untuk customer / keperluan</label>
+    <input id="customer" type="text" autocomplete="off">
+    <label for="foto" id="labelFoto">Foto bukti</label>
+    <input id="foto" type="file" accept="image/*" capture="environment">
+    <img id="previewFoto" alt="Pratinjau foto" hidden>
+    <button id="kirimSp" class="penuh" type="button">Catat barang keluar</button>
+  </section>
+
+  <!-- RIWAYAT GUDANG -->
+  <section id="vRiwayat" class="kartu" hidden>
+    <h1>Riwayat Gudang<span class="lencana">RIWAYAT</span></h1>
+    <div class="tabs">
+      <button id="tabTransaksi" class="tab aktif" type="button">Transaksi</button>
+      <button id="tabTerlaris" class="tab" type="button">Terlaris</button>
+    </div>
+
+    <div id="panelTransaksi">
+      <p class="sub">50 transaksi terakhir, terbaru di atas.</p>
+      <div class="tabs">
+        <button class="tab filterRiwayat aktif" data-jenis="" type="button">Semua</button>
+        <button class="tab filterRiwayat" data-jenis="Keluar" type="button">Keluar</button>
+        <button class="tab filterRiwayat" data-jenis="Masuk" type="button">Masuk</button>
+      </div>
+      <ul id="daftarRiwayat" class="daftar"></ul>
+      <button id="muatRiwayat" class="muat" type="button">Muat ulang</button>
+    </div>
+
+    <div id="panelTerlaris" hidden>
+      <p class="sub">Part yang paling banyak keluar, dihitung dari jumlah barang.</p>
+      <div class="tabs">
+        <button class="tab filterPeriode aktif" data-periode="bulan" type="button">Bulan ini</button>
+        <button class="tab filterPeriode" data-periode="3bulan" type="button">3 bulan</button>
+        <button class="tab filterPeriode" data-periode="tahun" type="button">Tahun ini</button>
+      </div>
+      <ol id="daftarTerlaris" class="daftar"></ol>
+      <p class="catatan">Termasuk semua barang keluar (penjualan, servis, dan garansi), karena form belum membedakannya.</p>
+    </div>
+  </section>
+
+  <!-- MODUL SALES -->
+  <section id="vSales" class="kartu" hidden>
+    <h1>Kunjungan Sales<span class="lencana">SALES</span></h1>
+    <div id="formSales">
+    <label for="nama">Nama yang dikunjungi</label>
+    <input id="nama" type="text" autocomplete="off">
+    <label for="alamat">Alamat</label>
+    <button id="tombolLokasi" class="sekunder" type="button" style="width:100%">Ambil lokasi saat ini</button>
+    <p id="infoLokasi" hidden></p>
+    <textarea id="alamat" placeholder="Alamat terisi otomatis setelah lokasi diambil, atau ketik manual"></textarea>
+    <label for="hp">No HP</label>
+    <input id="hp" type="tel" inputmode="tel" autocomplete="off">
+    <label for="industri">Industri</label>
+    <select id="industri"><option value="">Pilih industri</option></select>
+    <label for="kebutuhan">Kebutuhan unit</label>
+    <select id="kebutuhan"><option value="">Pilih unit</option></select>
+    <label for="status">Status customer</label>
+    <select id="status"><option value="">Pilih status</option></select>
+    <label for="fotoSales">Foto bersama customer (wajib)</label>
+    <label for="fotoSales" class="tombolFoto">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+      <span id="teksTombolFoto">Buka kamera</span>
+    </label>
+    <input id="fotoSales" type="file" accept="image/*" capture="environment" class="tersembunyi">
+    <p class="info">Ambil lokasi dulu. Waktu, alamat, dan peta akan menempel otomatis di foto.</p>
+    <img id="previewSales" class="pratinjauCap" alt="Foto kunjungan dengan cap waktu dan lokasi" hidden>
+    <button id="simpanFotoForm" class="penuh sekunder tombolIkon" type="button" hidden><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Simpan ke galeri</button>
+    <button id="kirimSales" class="penuh" type="button">Kirim kunjungan</button>
+    </div>
+
+    <!-- Muncul setelah kunjungan tersimpan -->
+    <div id="panelBagikan" hidden>
+      <p class="berhasil">Kunjungan tersimpan</p>
+      <img id="fotoTerkirim" class="pratinjauCap" alt="Foto kunjungan yang tersimpan">
+      <button id="tombolBagikan" class="penuh tombolWA" type="button">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3a.5.5 0 0 0 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.9 11.9 0 0 0 4.6 4c1.7.7 2.3.8 3.2.7a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg>
+        Bagikan ke WhatsApp
+      </button>
+      <button id="tombolSimpan" class="penuh sekunder tombolIkon" type="button"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Simpan ke galeri</button>
+      <button id="tombolBaru" class="penuh muat" type="button">Catat kunjungan baru</button>
+    </div>
+  </section>
+
+  <!-- PANTAU SALES -->
+  <section id="vPantau" class="kartu" hidden>
+    <h1>Perkembangan Sales<span class="lencana">PANTAU</span></h1>
+    <p class="sub" id="subPantau"></p>
+    <div class="tabs">
+      <button id="tabRingkasan" class="tab aktif" type="button">Ringkasan</button>
+      <button id="tabStatus" class="tab" type="button">Status Customer</button>
+    </div>
+
+    <div id="panelRingkasan">
+      <div id="ringkasanSales"></div>
+      <p class="judulBagian">Kunjungan terakhir</p>
+      <ul id="daftarKunjungan" class="daftar"></ul>
+      <button id="muatPantau" class="muat" type="button">Muat ulang</button>
+    </div>
+
+    <div id="panelStatus" hidden>
+      <div id="kotakStatus" class="kotakStatus"></div>
+      <input id="cariCustomer" type="search" placeholder="Cari nama customer..." autocomplete="off">
+      <p id="infoCustomer" class="info"></p>
+      <ul id="daftarCustomer" class="daftar"></ul>
+      <button id="muatCustomer" class="muat" type="button">Muat ulang</button>
+    </div>
+    <p class="catatan">No HP customer tidak ditampilkan di sini. Lihat di spreadsheet kalau perlu.</p>
+  </section>
+
+  <!-- UNIT & ATTACHMENT -->
+  <section id="vKatalog" class="kartu" hidden>
+    <div id="daftarKatalogWrap">
+      <h1>Unit &amp; Attachment<span class="lencana">KATALOG</span></h1>
+      <p id="infoContoh" class="infoContoh" hidden>DATA CONTOH. Nama, spek, dan lampiran di sini belum data resmi.</p>
+      <div class="tabs">
+        <button id="tabUnit" class="tab aktif" type="button">Unit</button>
+        <button id="tabAttachment" class="tab" type="button">Attachment</button>
+      </div>
+      <div id="filterIndustri" class="filterChip" hidden></div>
+      <input id="cariKatalog" type="search" placeholder="Cari nama..." autocomplete="off">
+      <ul id="daftarKatalog" class="daftarKatalog"></ul>
+    </div>
+
+    <!-- Detail satu unit / attachment -->
+    <div id="detailKatalog" hidden>
+      <button id="tutupDetail" class="kembaliDaftar" type="button">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+        <span id="teksTutupDetail">Daftar unit</span>
+      </button>
+      <div class="fotoDetail"><img id="fotoDetail" alt=""><span id="statusDetail" class="statusUnit"></span></div>
+      <h1 id="namaDetail"></h1>
+      <p id="subDetail" class="sub"></p>
+      <div id="industriDetail"></div>
+      <p class="judulBagian" id="judulSpek">Spesifikasi</p>
+      <dl id="spekDetail" class="spek"></dl>
+      <p class="judulBagian" id="judulTerkait"></p>
+      <div id="terkaitDetail" class="terkait"></div>
+      <p class="judulBagian" id="judulLampiran">Lampiran</p>
+      <ul id="lampiranDetail" class="daftarLampiran"></ul>
+      <p id="catatanDetail" class="catatan"></p>
+      <button id="bagikanKatalog" class="penuh tombolWA" type="button">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3a.5.5 0 0 0 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.9 11.9 0 0 0 4.6 4c1.7.7 2.3.8 3.2.7a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg>
+        Bagikan via WhatsApp
+      </button>
+    </div>
+  </section>
+
+  <p id="pesan" hidden></p>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script>
+  // ===== PENGATURAN =====
+  // Tempel URL /exec milikmu di dua baris ini (salin dari index.html yang lama)
+  const URL_SPAREPART = "https://script.google.com/macros/s/AKfycbzzQE9sRJeGkVRFNrn5ouPVGM4ExYSsPxGxzZ3p_5mvy_87UZKN95SIvJYPmh5E1RTe/exec";
+  const URL_SALES = "https://script.google.com/macros/s/AKfycbzfuCiGvuYjWx5uKOOLmUXAgxJh_Xu6Y8UGPVL6m4mXteXLWP1RE153PdL5wLO6Ia2X/exec";
+  const DAFTAR_INDUSTRI = ["Tebu", "Kayu", "PU", "Sawit", "Besi Tua"];
+  const DAFTAR_UNIT = ["B75 Eco", "C80W", "C80W Pro", "B80W", "C105M", "C120S", "C130", "C150"];
+  const DAFTAR_STATUS = ["Cold", "Warm", "Hot", "Deal", "Batal"];
+  const FOTO_WAJIB_KELUAR = true;
+  const FOTO_WAJIB_MASUK = false;
+  const DEMO = false;   // true hanya untuk pratinjau, biarkan false di file asli
+  // ======================
+
+  const LS = {
+    get: function (k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+    set: function (k, v) { try { localStorage.setItem(k, v); } catch (e) {} },
+    del: function (k) { try { localStorage.removeItem(k); } catch (e) {} }
+  };
+
+  // ----- Data palsu untuk mode DEMO -----
+  if (DEMO) {
+    try { Object.defineProperty(navigator, "geolocation", { value: { getCurrentPosition: function (ok) { ok({ coords: { latitude: -4.81862, longitude: 105.21734, accuracy: 12 } }); } } }); } catch (e) {}
+    const contohRiwayat = [
+      { waktu: "25/11/2026 10:42", jenis: "Keluar", kode: "P20328000012", nama: "FILTER SOLAR 012", jumlah: 2, pengambil: "Budi Santoso", keterangan: "Unit B80W PT Contoh Kayu" },
+      { waktu: "25/11/2026 09:15", jenis: "Masuk", kode: "P20328000045", nama: "SEAL KIT BOOM", jumlah: 10, pengambil: "Doni", keterangan: "SJ-0912" },
+      { waktu: "24/11/2026 16:03", jenis: "Keluar", kode: "P20328000031", nama: "FILTER OLI MESIN", jumlah: 1, pengambil: "Budi Santoso", keterangan: "Servis 500 jam" },
+      { waktu: "24/11/2026 11:20", jenis: "Keluar", kode: "P20328000012", nama: "FILTER SOLAR 012", jumlah: 1, pengambil: "Andi", keterangan: "Unit tebu Way Kanan" },
+      { waktu: "23/11/2026 14:48", jenis: "Masuk", kode: "P20328000012", nama: "FILTER SOLAR 012", jumlah: 20, pengambil: "Doni", keterangan: "SJ-0877" }
+    ];
+    const contohPantau = {
+      ok: true,
+      ringkasan: [
+        { sales: "Sandra", hariIni: 2, mingguIni: 9, bulanIni: 31, perIndustri: { Tebu: 12, Kayu: 10, Sawit: 6, PU: 3 } },
+        { sales: "Chandra", hariIni: 1, mingguIni: 6, bulanIni: 22, perIndustri: { Kayu: 9, Sawit: 8, "Besi Tua": 5 } }
+      ],
+      terakhir: [
+        { waktu: "25/11/2026 10:05", sales: "Sandra", nama: "PT Contoh Tebu", alamat: "Jl. Contoh No. 1, Way Kanan", industri: "Tebu" },
+        { waktu: "25/11/2026 08:40", sales: "Chandra", nama: "CV Contoh Kayu", alamat: "Jl. Contoh No. 7, Muaro Jambi", industri: "Kayu" },
+        { waktu: "24/11/2026 15:22", sales: "Sandra", nama: "Bapak Contoh", alamat: "Desa Contoh, OKI", industri: "Sawit" }
+      ]
+    };
+    // Customer palsu. Di aplikasi asli, server menggabungkan kunjungan berdasarkan No HP.
+    const contohCustomer = [
+      { id: "c1", nama: "PT Contoh Tebu", sales: "Sandra", kebutuhan: "C80W Pro", status: "Hot", terakhir: "25/11/2026",
+        riwayat: [{ waktu: "25/11/2026", status: "Hot", kebutuhan: "C80W Pro" }, { waktu: "02/11/2026", status: "Warm", kebutuhan: "C80W Pro" }, { waktu: "08/10/2026", status: "Cold", kebutuhan: "C80W" }] },
+      { id: "c2", nama: "CV Contoh Kayu", sales: "Chandra", kebutuhan: "B80W", status: "Warm", terakhir: "25/11/2026",
+        riwayat: [{ waktu: "25/11/2026", status: "Warm", kebutuhan: "B80W" }, { waktu: "10/11/2026", status: "Cold", kebutuhan: "B80W" }] },
+      { id: "c3", nama: "Bapak Contoh", sales: "Sandra", kebutuhan: "B75 Eco", status: "Cold", terakhir: "24/11/2026",
+        riwayat: [{ waktu: "24/11/2026", status: "Cold", kebutuhan: "B75 Eco" }] },
+      { id: "c4", nama: "PT Sawit Contoh", sales: "Chandra", kebutuhan: "C120S", status: "Deal", terakhir: "20/11/2026",
+        riwayat: [{ waktu: "20/11/2026", status: "Deal", kebutuhan: "C120S" }, { waktu: "05/11/2026", status: "Hot", kebutuhan: "C120S" }, { waktu: "15/10/2026", status: "Warm", kebutuhan: "C105M" }] },
+      { id: "c5", nama: "Ibu Contoh", sales: "Sandra", kebutuhan: "C80W", status: "Batal", terakhir: "18/11/2026",
+        riwayat: [{ waktu: "18/11/2026", status: "Batal", kebutuhan: "C80W" }, { waktu: "01/11/2026", status: "Warm", kebutuhan: "C80W" }] },
+      { id: "c6", nama: "UD Contoh Besi", sales: "Chandra", kebutuhan: "C150", status: "Hot", terakhir: "15/11/2026",
+        riwayat: [{ waktu: "15/11/2026", status: "Hot", kebutuhan: "C150" }, { waktu: "28/10/2026", status: "Warm", kebutuhan: "C130" }] },
+      { id: "c7", nama: "Koperasi Contoh", sales: "Sandra", kebutuhan: "", status: "", terakhir: "12/09/2026",
+        riwayat: [{ waktu: "12/09/2026", status: "", kebutuhan: "" }] }
+    ];
+    // Part paling banyak keluar per periode (palsu)
+    const contohTerlaris = {
+      bulan: [
+        { kode: "P20328000012", nama: "FILTER SOLAR 012", total: 18, transaksi: 11 },
+        { kode: "P20328000031", nama: "FILTER OLI MESIN", total: 14, transaksi: 9 },
+        { kode: "P20328000058", nama: "FILTER UDARA", total: 9, transaksi: 7 },
+        { kode: "P20328000045", nama: "SEAL KIT BOOM", total: 6, transaksi: 3 },
+        { kode: "P20328000077", nama: "KUKU BUCKET", total: 5, transaksi: 2 }
+      ],
+      "3bulan": [
+        { kode: "P20328000031", nama: "FILTER OLI MESIN", total: 47, transaksi: 30 },
+        { kode: "P20328000012", nama: "FILTER SOLAR 012", total: 44, transaksi: 28 },
+        { kode: "P20328000058", nama: "FILTER UDARA", total: 25, transaksi: 19 },
+        { kode: "P20328000077", nama: "KUKU BUCKET", total: 20, transaksi: 6 },
+        { kode: "P20328000045", nama: "SEAL KIT BOOM", total: 12, transaksi: 7 },
+        { kode: "P20328000090", nama: "V-BELT", total: 8, transaksi: 8 }
+      ],
+      tahun: [
+        { kode: "P20328000031", nama: "FILTER OLI MESIN", total: 160, transaksi: 101 },
+        { kode: "P20328000012", nama: "FILTER SOLAR 012", total: 151, transaksi: 96 },
+        { kode: "P20328000058", nama: "FILTER UDARA", total: 88, transaksi: 70 },
+        { kode: "P20328000077", nama: "KUKU BUCKET", total: 64, transaksi: 18 },
+        { kode: "P20328000090", nama: "V-BELT", total: 40, transaksi: 37 },
+        { kode: "P20328000045", nama: "SEAL KIT BOOM", total: 33, transaksi: 19 }
+      ]
+    };
+    // Peta palsu untuk demo (di aplikasi asli, peta dari Google Maps lewat script Sales)
+    function petaPalsu() {
+      const c = document.createElement("canvas"); c.width = 320; c.height = 320;
+      const g = c.getContext("2d");
+      g.fillStyle = "#eef0ea"; g.fillRect(0, 0, 320, 320);
+      g.strokeStyle = "#ffffff"; g.lineWidth = 10;
+      [[0, 90, 320, 120], [0, 230, 320, 210], [80, 0, 110, 320], [230, 0, 200, 320]].forEach(function (l) { g.beginPath(); g.moveTo(l[0], l[1]); g.lineTo(l[2], l[3]); g.stroke(); });
+      g.strokeStyle = "#f6cf65"; g.lineWidth = 14; g.beginPath(); g.moveTo(160, 0); g.lineTo(150, 320); g.stroke();
+      g.fillStyle = "#cfe6c4"; g.fillRect(250, 20, 60, 50); g.fillRect(10, 250, 55, 60);
+      g.fillStyle = "#ea4335"; g.beginPath(); g.arc(155, 150, 16, Math.PI, 0); g.lineTo(155, 185); g.closePath(); g.fill();
+      g.fillStyle = "#7a1f17"; g.beginPath(); g.arc(155, 150, 6, 0, Math.PI * 2); g.fill();
+      return c.toDataURL("image/png");
+    }
+    // Gambar contoh (siluet alat berat sederhana), bukan foto unit asli
+    function gambarContoh(teks, attachment) {
+      const svg = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 200'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='#fff4ec'/><stop offset='1' stop-color='#f3dcd2'/></linearGradient></defs>" +
+        "<rect width='320' height='200' fill='url(#g)'/>" +
+        (attachment
+          ? "<path d='M120 60h80l-10 70h-60z' fill='#3a3233'/><path d='M130 130l-15 35M160 130v40M190 130l15 35' stroke='#3a3233' stroke-width='9' stroke-linecap='round'/>"
+          : "<rect x='70' y='100' width='120' height='38' rx='6' fill='#c8202c'/><rect x='150' y='72' width='42' height='34' rx='5' fill='#3a3233'/><path d='M100 100L170 45l70 30' stroke='#e77b24' stroke-width='12' fill='none' stroke-linecap='round'/><path d='M240 75l15 40-25 5' fill='#3a3233'/><circle cx='95' cy='150' r='18' fill='#231d1e'/><circle cx='170' cy='150' r='18' fill='#231d1e'/>") +
+        "<text x='16' y='186' font-family='Arial' font-size='14' font-weight='700' fill='#8a4b0b'>CONTOH · " + teks + "</text></svg>";
+      return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+    }
+    const SPEK_CONTOH = [["Bobot operasi", "isi dari brosur"], ["Mesin", "isi dari brosur"], ["Daya", "isi dari brosur"], ["Kapasitas bucket", "isi dari brosur"], ["Kedalaman gali", "isi dari brosur"]];
+    const LAMPIRAN_CONTOH = [{ jenis: "Brosur", url: "https://example.com/brosur-contoh.pdf" }, { jenis: "Video", url: "https://example.com/video-contoh" }];
+    const contohKatalog = {
+      ok: true, contoh: true,
+      unit: [
+        { nama: "B75 Eco", kategori: "Excavator roda (contoh)", status: "Ready", spek: SPEK_CONTOH, lampiran: LAMPIRAN_CONTOH },
+        { nama: "C80W", kategori: "Excavator roda (contoh)", status: "Ready", spek: SPEK_CONTOH, lampiran: LAMPIRAN_CONTOH },
+        { nama: "C80W Pro", kategori: "Excavator roda (contoh)", status: "Ready", spek: SPEK_CONTOH, lampiran: LAMPIRAN_CONTOH, catatan: "Catatan contoh: tulis keunggulan atau info layanan purna jual di sini." },
+        { nama: "B80W", kategori: "Excavator roda (contoh)", status: "Inden", spek: SPEK_CONTOH, lampiran: LAMPIRAN_CONTOH },
+        { nama: "C105M", kategori: "Excavator roda (contoh)", status: "Ready", spek: SPEK_CONTOH, lampiran: LAMPIRAN_CONTOH },
+        { nama: "C120S", kategori: "Excavator roda (contoh)", status: "Inden", spek: SPEK_CONTOH, lampiran: LAMPIRAN_CONTOH },
+        { nama: "C130", kategori: "Excavator roda (contoh)", status: "Inden", spek: SPEK_CONTOH, lampiran: LAMPIRAN_CONTOH },
+        { nama: "C150", kategori: "Excavator roda (contoh)", status: "Ready", spek: SPEK_CONTOH, lampiran: LAMPIRAN_CONTOH }
+      ],
+      attachment: [
+        { nama: "Log Grapple", fungsi: "Penjepit kayu gelondong (contoh)", industri: ["Kayu"], spek: [["Bukaan rahang", "isi dari data resmi"], ["Rotasi", "isi dari data resmi"]], lampiran: [{ jenis: "Video", url: "https://example.com/video-contoh" }] },
+        { nama: "Grab Tebu", fungsi: "Penjepit tebu untuk muat ke truk (contoh)", industri: ["Tebu"], spek: [["Kapasitas", "isi dari data resmi"]], lampiran: [] },
+        { nama: "Hydraulic Breaker", fungsi: "Pemecah batu dan beton (contoh)", industri: ["PU", "Besi Tua"], spek: [], lampiran: [] },
+        { nama: "Bucket Standar", fungsi: "Gali dan muat material (contoh)", spek: [], lampiran: [] },
+        { nama: "Ripper", fungsi: "Pembongkar tanah keras (contoh)", industri: ["Sawit", "PU"], spek: [], lampiran: [] }
+      ]
+    };
+    contohKatalog.unit.forEach(function (u) { u.foto = gambarContoh(u.nama, false); });
+    contohKatalog.attachment.forEach(function (a) { a.foto = gambarContoh(a.nama, true); });
+
+    window.fetch = function (url) {
+      const u = String(url), kode = ((u.match(/akses=([^&]*)/) || [])[1] || "").toLowerCase();
+      const sparepart = u.indexOf(URL_SPAREPART) === 0;
+      let isi = { ok: true, nama: "FILTER SOLAR 012", kode: "P20328000012", stok: 14, sisa: 13, alamat: "Jl. Contoh No. 12, Yukum Jaya, Kec. Terbanggi Besar, Kabupaten Lampung Tengah, Lampung 34163", wilayah: "Terbanggi Besar, Lampung" };
+      if (u.indexOf("aksi=login") !== -1) {
+        if (sparepart && (kode === "mekanik" || kode === "admin" || kode === "semua")) isi = { ok: true, peran: kode === "mekanik" ? "mekanik" : "admin", nama: kode === "mekanik" ? "Budi Santoso" : "Doni" };
+        else if (!sparepart && kode === "sales") isi = { ok: true, peran: "sales", nama: "Sandra" };
+        else if (!sparepart && (kode === "atasan" || kode === "semua")) isi = { ok: true, peran: "atasan", nama: kode === "semua" ? "Doni" : "Pak Hendra" };
+        else isi = { ok: false, pesan: "Kode akses salah" };
+      } else if (u.indexOf("aksi=riwayat") !== -1) {
+        isi = { ok: true, data: contohRiwayat };
+      } else if (u.indexOf("aksi=pantau") !== -1) {
+        isi = contohPantau;
+      } else if (u.indexOf("aksi=katalog") !== -1) {
+        isi = contohKatalog;
+      } else if (u.indexOf("aksi=peta") !== -1) {
+        isi = { ok: true, peta: petaPalsu() };
+      } else if (u.indexOf("aksi=customer") !== -1) {
+        isi = { ok: true, data: contohCustomer };
+      } else if (u.indexOf("aksi=terlaris") !== -1) {
+        const periode = (u.match(/periode=([^&]*)/) || [])[1] || "bulan";
+        isi = { ok: true, data: contohTerlaris[periode] || [] };
+      }
+      return new Promise(function (r) { setTimeout(function () { r({ json: function () { return Promise.resolve(isi); } }); }, 300); });
+    };
+  }
+
+  const $ = function (id) { return document.getElementById(id); };
+  const SEMUA_VIEW = ["vLoginWrap", "vBeranda", "vSparepart", "vRiwayat", "vSales", "vPantau", "vKatalog"];
+  let akses = "", user = { sp: null, sl: null }, mode = "Keluar", part = null, lokasi = null, pemindai = null;
+  let dataRiwayat = [], filterJenis = "", halamanAktif = "vLogin";
+  let dataCustomer = null, filterStatus = "";
+  let dataKatalog = null, jenisKatalog = "unit", detailAktif = null, filterIndustri = "";
+  let fotoAsli = null, waktuFoto = null, fotoCap = "", petaGambar = null, logoGambar = null, bagikanData = null;
+
+  // Isi pilihan dropdown dari daftar di PENGATURAN
+  function isiPilihan(id, daftar) {
+    daftar.forEach(function (n) { const o = document.createElement("option"); o.value = n; o.textContent = n; $(id).appendChild(o); });
+  }
+  isiPilihan("industri", DAFTAR_INDUSTRI);
+  isiPilihan("kebutuhan", DAFTAR_UNIT);
+  isiPilihan("status", DAFTAR_STATUS);
+  if (DEMO) $("infoDemo").hidden = false;
+
+  function tampil(teks, jenis) { const p = $("pesan"); p.textContent = teks; p.className = jenis; p.hidden = false; }
+  function sembunyiPesan() { $("pesan").hidden = true; }
+  function fotoWajib() { return mode === "Masuk" ? FOTO_WAJIB_MASUK : FOTO_WAJIB_KELUAR; }
+
+  // Membuat elemen dengan teks aman (pakai textContent, bukan innerHTML)
+  function el(tag, kelas, teks) {
+    const e = document.createElement(tag);
+    if (kelas) e.className = kelas;
+    if (teks !== undefined && teks !== null) e.textContent = teks;
+    return e;
+  }
+
+  function lihat(id, tema) {
+    const target = id === "vLogin" ? "vLoginWrap" : id;
+    const sebelumnya = halamanAktif;
+    halamanAktif = id;
+    SEMUA_VIEW.forEach(function (v) { $(v).hidden = v !== target; });
+    // Efek muncul halus hanya saat benar-benar pindah halaman
+    if (sebelumnya !== id) { const el2 = $(target); el2.classList.remove("muncul"); void el2.offsetWidth; el2.classList.add("muncul"); }
+    document.body.classList.remove("mode-masuk", "mode-sales", "mode-riwayat", "mode-pantau", "mode-katalog");
+    if (tema) document.body.classList.add(tema);
+    $("bar").hidden = id === "vLogin" || id === "vBeranda";
+    sembunyiPesan();
+    window.scrollTo(0, 0);
+  }
+
+  function aturMata(tampilkan) {
+    $("inputAkses").type = tampilkan ? "text" : "password";
+    $("ikonBuka").style.display = tampilkan ? "none" : "block";
+    $("ikonTutup").style.display = tampilkan ? "block" : "none";
+    $("tombolMata").setAttribute("aria-pressed", tampilkan ? "true" : "false");
+    $("tombolMata").setAttribute("aria-label", tampilkan ? "Sembunyikan kode akses" : "Tampilkan kode akses");
+  }
+
+  function inisialDari(nama) {
+    const kata = String(nama || "").trim().split(/\s+/).filter(Boolean);
+    if (kata.length === 0) return "?";
+    if (kata.length === 1) return kata[0].slice(0, 2).toUpperCase();
+    return (kata[0][0] + kata[1][0]).toUpperCase();
+  }
+
+  // Kalau server bilang kode tidak berlaku, balik ke login
+  function cekKodeMati(data) {
+    if (data && data.pesan === "Kode akses salah") { kembaliKeLogin("Kode akses tidak berlaku. Silakan login lagi."); return true; }
+    return false;
+  }
+
+  // ----- Login: cukup sekali, kode langsung disimpan di HP -----
+  async function cobaLogin(url, kode) {
+    try {
+      const res = await fetch(url + "?aksi=login&akses=" + encodeURIComponent(kode));
+      return await res.json();
+    } catch (err) { return null; }
+  }
+
+  async function login() {
+    const kode = $("inputAkses").value.trim();
+    if (!kode) { tampil("Isi kode akses dulu.", "gagal"); return; }
+    const tombol = $("tombolLogin");
+    tombol.disabled = true; tombol.textContent = "Memeriksa...";
+    const hasil = await Promise.all([cobaLogin(URL_SPAREPART, kode), cobaLogin(URL_SALES, kode)]);
+    tombol.disabled = false; tombol.textContent = "Masuk";
+    const sp = hasil[0] && hasil[0].ok ? hasil[0] : null;
+    const sl = hasil[1] && hasil[1].ok ? hasil[1] : null;
+    if (!sp && !sl) {
+      // Kode salah: hapus yang tersimpan. Gagal koneksi: biarkan, coba lagi nanti.
+      if (hasil[0] && hasil[1]) { LS.del("akses"); tampil("Kode akses salah.", "gagal"); }
+      else { tampil("Tidak bisa terhubung. Periksa internet, lalu tekan Masuk lagi.", "gagal"); }
+      return;
+    }
+    if (sl && !sl.peran) sl.peran = "sales";   // jaga-jaga kalau backend sales masih versi lama
+    akses = kode; user = { sp: sp, sl: sl };
+    LS.set("akses", kode);
+    const nama = sp ? sp.nama : sl.nama;
+    $("sapaan").textContent = "Halo, " + nama;
+    $("inisial").textContent = inisialDari(nama);
+    $("inisial").hidden = false;
+    bukaBeranda();
+  }
+
+  function kembaliKeLogin(pesanTeks) {
+    berhentiScan();
+    akses = ""; user = { sp: null, sl: null };
+    dataCustomer = null; filterStatus = ""; $("cariCustomer").value = "";
+    LS.del("akses");
+    $("inputAkses").value = ""; aturMata(false);
+    kosongkanSp(); kosongkanSales();
+    $("inisial").hidden = true;
+    lihat("vLogin");
+    if (pesanTeks) tampil(pesanTeks, "gagal");
+  }
+
+  // ----- Beranda -----
+  function bukaBeranda() {
+    berhentiScan();
+    const sp = user.sp, sl = user.sl;
+    $("namaUser").textContent = "Halo, " + (sp ? sp.nama : sl.nama);
+    $("tanggalHariIni").textContent = new Date().toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+    const wadah = $("chipPeran"); wadah.textContent = "";
+    wadah.appendChild(el("span", "chip merah", (sp ? sp.peran : sl.peran).toUpperCase()));
+    // Semua orang yang login melihat semua menu
+    lihat("vBeranda");
+  }
+
+  // ----- Tombol back HP -----
+  // Saat membuka menu, satu "langkah" ditambahkan ke riwayat browser.
+  // Tombol back HP (atau tombol Beranda) menghapus langkah itu dan kembali ke Beranda.
+  function masukMenu(buka) {
+    history.pushState({ menu: true }, "");
+    buka();
+  }
+  window.addEventListener("popstate", function () {
+    if (!akses) return;
+    if (detailAktif) { tutupDetailKatalog(); return; }     // dari detail unit, back ke daftar
+    if (halamanAktif !== "vBeranda" && halamanAktif !== "vLogin") bukaBeranda();
+  });
+  function tombolBeranda() {
+    if (history.state && history.state.detail) { detailAktif = null; history.go(-2); return; }
+    if (history.state && history.state.menu) history.back();   // popstate akan membuka Beranda
+    else bukaBeranda();
+  }
+
+  // Semua menu tampil, tapi kode harus terdaftar di spreadsheet yang dipakai menu itu
+  function bolehBuka(bagian) {
+    if (bagian === "sp" && !user.sp) { tampil("Kode kamu belum terdaftar di data gudang. Minta admin menambahkan kodemu ke tab Pengguna di spreadsheet Sparepart.", "gagal"); $("pesan").scrollIntoView({ behavior: "smooth" }); return false; }
+    if (bagian === "sl" && !user.sl) { tampil("Kode kamu belum terdaftar di data sales. Minta admin menambahkan kodemu ke tab Pengguna di spreadsheet Sparepart.", "gagal"); $("pesan").scrollIntoView({ behavior: "smooth" }); return false; }
+    return true;
+  }
+
+  // ----- Modul sparepart -----
+  function bukaSparepart(m) {
+    $("tabs").hidden = false;
+    aturMode(m === "Masuk" ? "Masuk" : "Keluar");
+  }
+
+  function aturMode(m) {
+    mode = m;
+    const masuk = m === "Masuk";
+    lihat("vSparepart", masuk ? "mode-masuk" : "");
+    $("judulSp").textContent = masuk ? "Barang Masuk" : "Barang Keluar";
+    $("lencanaSp").textContent = masuk ? "MASUK" : "KELUAR";
+    $("labelJumlah").textContent = masuk ? "Jumlah masuk" : "Jumlah keluar";
+    $("labelCustomer").textContent = masuk ? "Keterangan (supplier / no. surat jalan)" : "Untuk customer / keperluan";
+    $("labelFoto").textContent = "Foto bukti (" + (fotoWajib() ? "wajib" : "opsional") + ")";
+    $("kirimSp").textContent = masuk ? "Catat barang masuk" : "Catat barang keluar";
+    $("tabKeluar").classList.toggle("aktif", !masuk);
+    $("tabMasuk").classList.toggle("aktif", masuk);
+    kosongkanSp();
+  }
+
+  function kosongkanSp() {
+    berhentiScan();
+    $("kode").value = ""; $("jumlah").value = 1; $("customer").value = ""; $("foto").value = "";
+    $("previewFoto").hidden = true; $("kartuPart").hidden = true; part = null;
+  }
+
+  async function cekKode() {
+    const kode = $("kode").value.trim();
+    part = null; $("kartuPart").hidden = true;
+    if (!kode) return;
+    try {
+      const res = await fetch(URL_SPAREPART + "?akses=" + encodeURIComponent(akses) + "&kode=" + encodeURIComponent(kode));
+      const data = await res.json();
+      if (!data.ok) { if (!cekKodeMati(data)) tampil(data.pesan, "gagal"); return; }
+      sembunyiPesan();
+      part = data;
+      $("namaPart").textContent = String(data.nama).trim();
+      $("stokPart").textContent = "Kode " + data.kode + " - stok saat ini: " + data.stok;
+      $("kartuPart").hidden = false;
+    } catch (err) { tampil("Tidak bisa terhubung. Periksa internet.", "gagal"); }
+  }
+
+  function berhentiScan() {
+    if (pemindai) { pemindai.stop().then(function () { pemindai.clear(); }).catch(function () {}); pemindai = null; }
+    $("areaScan").hidden = true;
+  }
+
+  function mulaiScan() {
+    if (pemindai) return;
+    $("areaScan").hidden = false;
+    pemindai = new Html5Qrcode("areaScan");
+    pemindai.start({ facingMode: "environment" }, { fps: 10, qrbox: 240 },
+      function (teks) { berhentiScan(); $("kode").value = teks.trim(); cekKode(); },
+      function () {}
+    ).catch(function () {
+      $("areaScan").hidden = true; pemindai = null;
+      tampil("Kamera tidak bisa dibuka. Izinkan akses kamera, atau ketik kode part manual.", "gagal");
+    });
+  }
+
+  function kecilkanFoto(file) {
+    return new Promise(function (resolve, reject) {
+      const img = new Image(), url = URL.createObjectURL(file);
+      img.onload = function () {
+        const skala = Math.min(1, 1000 / Math.max(img.width, img.height));
+        const c = document.createElement("canvas");
+        c.width = Math.round(img.width * skala); c.height = Math.round(img.height * skala);
+        c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+        URL.revokeObjectURL(url);
+        resolve(c.toDataURL("image/jpeg", 0.7));
+      };
+      img.onerror = function () { reject(new Error("Foto tidak bisa dibaca")); };
+      img.src = url;
+    });
+  }
+
+  function pratinjauFoto() {
+    const file = $("foto").files[0], g = $("previewFoto");
+    if (!file) { g.hidden = true; return; }
+    g.src = URL.createObjectURL(file); g.hidden = false;
+  }
+
+  async function kirimKe(url, idTombol, ambilData) {
+    const tombol = $(idTombol), teks = tombol.textContent;
+    tombol.disabled = true; tombol.textContent = "Mengirim...";
+    let hasil = null;
+    try {
+      const data = await ambilData();
+      const res = await fetch(url, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(data) });
+      hasil = await res.json();
+    } catch (err) {
+      tampil("Gagal mengirim. Cek koneksi, lalu cek di Riwayat apakah sudah tercatat sebelum mengirim ulang.", "gagal");
+    }
+    tombol.disabled = false; tombol.textContent = teks;
+    if (hasil && !hasil.ok) {
+      if (!cekKodeMati(hasil)) tampil(hasil.pesan, "gagal");
+      return null;
+    }
+    return hasil;
+  }
+
+  async function kirimSparepart() {
+    const masuk = mode === "Masuk";
+    if (!part) { tampil("Scan atau ketik kode part dulu.", "gagal"); return; }
+    const jumlah = Number($("jumlah").value), customer = $("customer").value.trim(), file = $("foto").files[0];
+    if (!(jumlah > 0)) { tampil("Isi jumlah dengan angka lebih dari 0.", "gagal"); return; }
+    if (!masuk && !customer) { tampil("Customer / keperluan wajib diisi.", "gagal"); return; }
+    if (fotoWajib() && !file) { tampil("Ambil foto bukti dulu.", "gagal"); return; }
+    const kodePart = part.kode, namaPart = String(part.nama).trim();
+    const hasil = await kirimKe(URL_SPAREPART, "kirimSp", async function () {
+      return { jenis: mode, akses: akses, kode: kodePart, jumlah: jumlah, customer: customer, foto: file ? await kecilkanFoto(file) : "" };
+    });
+    if (!hasil) return;
+    const teks = masuk ? "Tercatat masuk: " + namaPart + ", +" + jumlah + ". Stok sekarang: " + hasil.sisa
+                       : "Tercatat: " + namaPart + ", keluar " + jumlah + ". Sisa stok: " + hasil.sisa;
+    kosongkanSp(); tampil(teks, "sukses");
+  }
+
+  // ----- Riwayat gudang (semua orang gudang lihat semua) -----
+  function bukaRiwayat() { lihat("vRiwayat", "mode-riwayat"); pilihPanelRiwayat("transaksi"); muatRiwayat(); }
+
+  // Pindah antara daftar Transaksi dan Paling Banyak Keluar
+  function pilihPanelRiwayat(p) {
+    const terlaris = p === "terlaris";
+    $("panelTransaksi").hidden = terlaris;
+    $("panelTerlaris").hidden = !terlaris;
+    $("tabTransaksi").classList.toggle("aktif", !terlaris);
+    $("tabTerlaris").classList.toggle("aktif", terlaris);
+    if (terlaris) muatTerlaris(periodeTerlaris);
+  }
+
+  // ----- Paling banyak keluar -----
+  let periodeTerlaris = "bulan";
+  async function muatTerlaris(periode) {
+    periodeTerlaris = periode;
+    document.querySelectorAll(".filterPeriode").forEach(function (b) { b.classList.toggle("aktif", b.dataset.periode === periode); });
+    const daftar = $("daftarTerlaris");
+    daftar.textContent = ""; daftar.appendChild(el("li", "kosong", "Memuat..."));
+    try {
+      const res = await fetch(URL_SPAREPART + "?aksi=terlaris&akses=" + encodeURIComponent(akses) + "&periode=" + periode);
+      const data = await res.json();
+      daftar.textContent = "";
+      if (!data.ok) { if (!cekKodeMati(data)) tampil(data.pesan, "gagal"); return; }
+      const isi = data.data || [];
+      if (isi.length === 0) { daftar.appendChild(el("li", "kosong", "Belum ada barang keluar di periode ini.")); return; }
+      const tertinggi = isi[0].total || 1;
+      isi.forEach(function (p, i) {
+        const li = el("li", "peringkat");
+        li.appendChild(el("span", "nomor", String(i + 1)));
+        const tengah = el("div", "isiPeringkat");
+        tengah.appendChild(el("p", "itemJudul", p.nama));
+        tengah.appendChild(el("p", "itemIsi", p.kode + " · " + p.transaksi + " kali keluar"));
+        const batang = el("div", "batang"), isiBatang = el("span");
+        isiBatang.style.width = Math.round(p.total / tertinggi * 100) + "%";
+        batang.appendChild(isiBatang); tengah.appendChild(batang);
+        li.appendChild(tengah);
+        const kanan = el("div", "totalPart");
+        kanan.appendChild(el("b", "", String(p.total)));
+        kanan.appendChild(el("span", "", "pcs"));
+        li.appendChild(kanan);
+        daftar.appendChild(li);
+      });
+    } catch (err) {
+      daftar.textContent = "";
+      tampil("Data tidak bisa dimuat. Periksa internet.", "gagal");
+    }
+  }
+
+  async function muatRiwayat() {
+    const daftar = $("daftarRiwayat"), tombol = $("muatRiwayat");
+    daftar.textContent = ""; daftar.appendChild(el("li", "kosong", "Memuat..."));
+    tombol.disabled = true;
+    try {
+      const res = await fetch(URL_SPAREPART + "?aksi=riwayat&akses=" + encodeURIComponent(akses));
+      const data = await res.json();
+      tombol.disabled = false;
+      if (!data.ok) { if (!cekKodeMati(data)) tampil(data.pesan, "gagal"); daftar.textContent = ""; return; }
+      dataRiwayat = data.data || [];
+      gambarRiwayat();
+    } catch (err) {
+      tombol.disabled = false; daftar.textContent = "";
+      tampil("Riwayat tidak bisa dimuat. Periksa internet.", "gagal");
+    }
+  }
+
+  function gambarRiwayat() {
+    const daftar = $("daftarRiwayat"); daftar.textContent = "";
+    document.querySelectorAll(".filterRiwayat").forEach(function (b) { b.classList.toggle("aktif", b.dataset.jenis === filterJenis); });
+    const tampilan = dataRiwayat.filter(function (t) { return !filterJenis || t.jenis === filterJenis; });
+    if (tampilan.length === 0) { daftar.appendChild(el("li", "kosong", "Belum ada transaksi.")); return; }
+    tampilan.forEach(function (t) {
+      const li = el("li", "item");
+      const atas = el("div", "itemAtas");
+      atas.appendChild(el("span", "jenis " + t.jenis, t.jenis.toUpperCase()));
+      atas.appendChild(el("span", "", t.waktu));
+      li.appendChild(atas);
+      li.appendChild(el("p", "itemJudul", t.nama));
+      const isi = el("p", "itemIsi");
+      isi.appendChild(el("span", "angka", (t.jenis === "Masuk" ? "+" : "-") + t.jumlah));
+      isi.appendChild(document.createTextNode(" · " + t.kode + " · oleh " + t.pengambil + (t.keterangan ? " · " + t.keterangan : "")));
+      li.appendChild(isi);
+      daftar.appendChild(li);
+    });
+  }
+
+  // ----- Modul sales -----
+  function bukaSales() { kosongkanSales(); lihat("vSales", "mode-sales"); }
+
+  function kosongkanSales() {
+    $("nama").value = ""; $("alamat").value = ""; $("hp").value = ""; $("industri").value = "";
+    $("kebutuhan").value = ""; $("status").value = "";
+    $("infoLokasi").hidden = true; $("tombolLokasi").textContent = "Ambil lokasi saat ini"; $("tombolLokasi").disabled = false;
+    lokasi = null;
+    $("fotoSales").value = ""; $("previewSales").hidden = true; $("simpanFotoForm").hidden = true; $("teksTombolFoto").textContent = "Buka kamera";
+    fotoAsli = null; waktuFoto = null; fotoCap = ""; petaGambar = null; bagikanData = null;
+    $("formSales").hidden = false; $("panelBagikan").hidden = true;
+  }
+
+  function ambilLokasi() {
+    if (!navigator.geolocation) { tampil("Perangkat ini tidak mendukung lokasi. Ketik alamat manual.", "gagal"); return; }
+    const tombol = $("tombolLokasi");
+    tombol.disabled = true; tombol.textContent = "Mengambil lokasi..."; sembunyiPesan();
+    navigator.geolocation.getCurrentPosition(
+      async function (pos) {
+        lokasi = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+        $("infoLokasi").textContent = "Lokasi tercatat (akurasi sekitar " + Math.round(pos.coords.accuracy) + " m)";
+        $("infoLokasi").hidden = false;
+        tombol.textContent = "Mengambil alamat...";
+        const titik = "&akses=" + encodeURIComponent(akses) + "&lat=" + lokasi.lat + "&lng=" + lokasi.lng;
+        // Alamat dan peta mini diambil bersamaan supaya cepat
+        const ambilPeta = fetch(URL_SALES + "?aksi=peta" + titik).then(function (r) { return r.json(); }).catch(function () { return null; });
+        try {
+          const res = await fetch(URL_SALES + "?aksi=alamat" + titik);
+          const data = await res.json();
+          if (data.ok) { $("alamat").value = data.alamat; lokasi.alamat = data.alamat; lokasi.wilayah = data.wilayah || ""; }
+          else if (cekKodeMati(data)) { return; }
+          else { tampil(data.pesan, "gagal"); }
+        } catch (err) { tampil("Lokasi didapat, tapi alamat tidak bisa diambil. Ketik alamat manual.", "gagal"); }
+        const peta = await ambilPeta;
+        petaGambar = null;
+        if (peta && peta.ok) { try { petaGambar = await muatGambar(peta.peta); } catch (e) {} }
+        if (fotoAsli) await buatCap();   // lokasi diambil ulang: cap di foto ikut diperbarui
+        tombol.disabled = false; tombol.textContent = "Ambil lokasi lagi";
+      },
+      function (err) {
+        tombol.disabled = false; tombol.textContent = "Ambil lokasi saat ini";
+        tampil(err.code === 1
+          ? "Izin lokasi ditolak. Aktifkan izin lokasi untuk situs ini di pengaturan browser, atau ketik alamat manual."
+          : "Lokasi tidak bisa diambil. Coba di tempat terbuka, atau ketik alamat manual.", "gagal");
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+    );
+  }
+
+  async function kirimSalesForm() {
+    const nama = $("nama").value.trim(), alamat = $("alamat").value.trim(), hp = $("hp").value.trim(), industri = $("industri").value;
+    if (!nama) { tampil("Nama yang dikunjungi wajib diisi.", "gagal"); return; }
+    if (!alamat) { tampil("Alamat wajib diisi. Ambil lokasi atau ketik manual.", "gagal"); return; }
+    if (!hp) { tampil("No HP wajib diisi.", "gagal"); return; }
+    if (!industri) { tampil("Pilih industri dulu.", "gagal"); return; }
+    const kebutuhan = $("kebutuhan").value, status = $("status").value;
+    if (!kebutuhan) { tampil("Pilih kebutuhan unit dulu.", "gagal"); return; }
+    if (!status) { tampil("Pilih status customer dulu.", "gagal"); return; }
+    if (!fotoCap) { tampil("Ambil foto bersama customer dulu.", "gagal"); return; }
+    await buatCap();   // pastikan nama customer di cap sesuai isian terakhir
+    const foto = fotoCap, waktu = waktuFoto, titik = lokasi;
+    const hasil = await kirimKe(URL_SALES, "kirimSales", async function () {
+      return { akses: akses, nama: nama, alamat: alamat, hp: hp, industri: industri, kebutuhan: kebutuhan, status: status, lat: titik ? titik.lat : null, lng: titik ? titik.lng : null, foto: foto };
+    });
+    if (!hasil) return;
+    dataCustomer = null;   // supaya daftar status dimuat ulang
+    kosongkanSales();
+    // Siapkan bahan untuk dibagikan ke WhatsApp (tanpa No HP customer)
+    bagikanData = {
+      foto: foto,
+      namaFile: namaFileFoto(nama, waktu),
+      teks: "*Kunjungan Sales*\nSales: " + namaPengguna() + "\nCustomer: " + nama + "\nUnit: " + kebutuhan + "\nStatus: " + status +
+            "\nWaktu: " + teksWaktu(waktu) + (titik ? "\nLokasi: https://www.google.com/maps?q=" + titik.lat + "," + titik.lng : "")
+    };
+    $("fotoTerkirim").src = foto;
+    $("formSales").hidden = true; $("panelBagikan").hidden = false;
+    window.scrollTo(0, 0);
+  }
+
+  // ----- Unit & Attachment -----
+  function bukaKatalog() {
+    detailAktif = null;
+    $("detailKatalog").hidden = true; $("daftarKatalogWrap").hidden = false;
+    lihat("vKatalog", "mode-katalog");
+    if (dataKatalog) gambarKatalog(); else muatKatalog();
+  }
+
+  async function muatKatalog() {
+    const daftar = $("daftarKatalog");
+    daftar.textContent = ""; daftar.appendChild(el("li", "kosong", "Memuat..."));
+    try {
+      const res = await fetch(URL_SALES + "?aksi=katalog&akses=" + encodeURIComponent(akses));
+      const data = await res.json();
+      if (!data.ok) { daftar.textContent = ""; if (!cekKodeMati(data)) tampil(data.pesan, "gagal"); return; }
+      dataKatalog = data;
+      $("infoContoh").hidden = !data.contoh;
+      gambarKatalog();
+    } catch (err) {
+      daftar.textContent = "";
+      tampil("Katalog tidak bisa dimuat. Periksa internet.", "gagal");
+    }
+  }
+
+  function pilihJenisKatalog(j) {
+    jenisKatalog = j;
+    $("tabUnit").classList.toggle("aktif", j === "unit");
+    $("tabAttachment").classList.toggle("aktif", j === "attachment");
+    gambarKatalog();
+  }
+
+  function gambarKatalog() {
+    if (!dataKatalog) return;
+    const isi = (jenisKatalog === "unit" ? dataKatalog.unit : dataKatalog.attachment) || [];
+
+    // Filter industri hanya untuk attachment, dibuat dari isi kolom Industri di spreadsheet
+    const semuaIndustri = [];
+    if (jenisKatalog === "attachment") {
+      isi.forEach(function (x) { (x.industri || []).forEach(function (n) { if (semuaIndustri.indexOf(n) === -1) semuaIndustri.push(n); }); });
+    }
+    if (semuaIndustri.indexOf(filterIndustri) === -1) filterIndustri = "";
+    const wadah = $("filterIndustri"); wadah.textContent = "";
+    wadah.hidden = semuaIndustri.length === 0;
+    [""].concat(semuaIndustri).forEach(function (n) {
+      const b = el("button", filterIndustri === n ? "aktif" : "", n || "Semua");
+      b.type = "button";
+      b.addEventListener("click", function () { filterIndustri = n; gambarKatalog(); });
+      wadah.appendChild(b);
+    });
+
+    // Daftar kartu
+    const cari = $("cariKatalog").value.trim().toLowerCase();
+    const hasil = isi.filter(function (x) {
+      return (!filterIndustri || (x.industri || []).indexOf(filterIndustri) !== -1) && (!cari || x.nama.toLowerCase().indexOf(cari) !== -1);
+    });
+    const daftar = $("daftarKatalog"); daftar.textContent = "";
+    if (isi.length === 0) {
+      daftar.appendChild(el("li", "kosong", "Katalog " + (jenisKatalog === "unit" ? "unit" : "attachment") + " belum diisi. Admin bisa mengisinya di tab " + (jenisKatalog === "unit" ? "Unit" : "Attachment") + " spreadsheet Database Sales."));
+      return;
+    }
+    if (hasil.length === 0) { daftar.appendChild(el("li", "kosong", "Tidak ada yang cocok.")); return; }
+    hasil.forEach(function (x) {
+      const li = el("li", "kartuUnit");
+      const g = el("img"); g.src = fotoAtauKosong(x.foto); g.alt = ""; g.loading = "lazy";
+      li.appendChild(g);
+      const isiKartu = el("div", "isi");
+      const judul = el("b", "", x.nama);
+      isiKartu.appendChild(judul);
+      isiKartu.appendChild(el("small", "", jenisKatalog === "unit" ? (x.kategori || "") : [x.fungsi].concat(x.industri || []).filter(Boolean).join(" · ")));
+      li.appendChild(isiKartu);
+      if (x.status) li.appendChild(el("span", "statusUnit " + x.status, x.status.toUpperCase()));
+      li.addEventListener("click", function () { bukaDetailKatalog(jenisKatalog, x.nama, true); });
+      daftar.appendChild(li);
+    });
+  }
+
+  // Gambar pengganti kalau unit/attachment belum punya foto
+  function fotoAtauKosong(url) {
+    if (url && /^(https:\/\/|data:image\/)/i.test(url)) return url;
+    const svg = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 200'><rect width='320' height='200' fill='#f6f2f1'/>" +
+      "<text x='160' y='108' text-anchor='middle' font-family='Arial' font-size='16' font-weight='700' fill='#b3a9aa'>Foto belum ada</text></svg>";
+    return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+  }
+
+  function namaSemua(jenis) {
+    return ((jenis === "unit" ? dataKatalog.unit : dataKatalog.attachment) || []).map(function (x) { return x.nama; });
+  }
+
+  function cariItem(jenis, nama) {
+    const isi = (jenis === "unit" ? dataKatalog.unit : dataKatalog.attachment) || [];
+    return isi.filter(function (x) { return x.nama.toLowerCase() === String(nama).toLowerCase(); })[0];
+  }
+
+  // Buka halaman detail. "dariDaftar" = true kalau dibuka dari daftar (menambah langkah back).
+  function bukaDetailKatalog(jenis, nama, dariDaftar) {
+    const x = cariItem(jenis, nama);
+    if (!x) { tampil("Data " + nama + " belum ada di katalog.", "gagal"); return; }
+    if (dariDaftar) history.pushState({ detail: true }, "");
+    detailAktif = { jenis: jenis, item: x };
+    const unit = jenis === "unit";
+    $("daftarKatalogWrap").hidden = true; $("detailKatalog").hidden = false;
+    $("teksTutupDetail").textContent = unit ? "Daftar unit" : "Daftar attachment";
+    $("fotoDetail").src = fotoAtauKosong(x.foto); $("fotoDetail").alt = x.nama;
+    $("statusDetail").textContent = x.status ? x.status.toUpperCase() : "";
+    $("statusDetail").className = "statusUnit " + (x.status || "");
+    $("namaDetail").textContent = x.nama;
+    $("subDetail").textContent = unit ? (x.kategori || "") : (x.fungsi || "");
+    const ind = $("industriDetail"); ind.textContent = "";
+    (x.industri || []).forEach(function (n) { ind.appendChild(el("span", "chip abu", n)); });
+
+    const spek = $("spekDetail"); spek.textContent = "";
+    (x.spek || []).forEach(function (sp) { spek.appendChild(el("dt", "", sp[0])); spek.appendChild(el("dd", "", sp[1])); });
+    $("judulSpek").hidden = spek.childNodes.length === 0;
+
+    // Semua unit cocok dengan semua attachment, jadi daftarnya diambil otomatis
+    const terkait = namaSemua(unit ? "attachment" : "unit");
+    $("judulTerkait").textContent = unit ? "Attachment tersedia" : "Bisa dipasang di semua unit";
+    $("judulTerkait").hidden = terkait.length === 0;
+    const wadah = $("terkaitDetail"); wadah.textContent = "";
+    terkait.forEach(function (n) {
+      const b = el("button", "", n); b.type = "button";
+      b.addEventListener("click", function () { bukaDetailKatalog(unit ? "attachment" : "unit", n, false); window.scrollTo(0, 0); });
+      wadah.appendChild(b);
+    });
+
+    const lamp = $("lampiranDetail"); lamp.textContent = "";
+    (x.lampiran || []).forEach(function (l) {
+      if (!/^https:\/\//i.test(l.url || "")) return;   // hanya link https yang aman
+      const li = el("li"), a = el("a");
+      a.href = l.url; a.target = "_blank"; a.rel = "noopener";
+      a.appendChild(el("span", "jenisLampiran", l.jenis === "Video" ? "VID" : l.jenis === "Brosur" ? "PDF" : "IMG"));
+      const t = el("div"); t.appendChild(document.createTextNode(l.jenis)); t.appendChild(el("small", "", "Ketuk untuk membuka"));
+      a.appendChild(t); li.appendChild(a); lamp.appendChild(li);
+    });
+    $("judulLampiran").hidden = lamp.childNodes.length === 0;
+    $("catatanDetail").textContent = x.catatan || "";
+    window.scrollTo(0, 0);
+  }
+
+  function tutupDetailKatalog() {
+    detailAktif = null;
+    $("detailKatalog").hidden = true; $("daftarKatalogWrap").hidden = false;
+    gambarKatalog();
+  }
+
+  // Ringkasan untuk customer, tanpa harga
+  function bagikanKatalog() {
+    if (!detailAktif) return;
+    const x = detailAktif.item, unit = detailAktif.jenis === "unit";
+    let teks = "*" + (unit ? "Xinyuan " : "Attachment ") + x.nama + "*\n" + (unit ? (x.kategori || "") : (x.fungsi || ""));
+    (x.spek || []).slice(0, 6).forEach(function (sp) { teks += "\n• " + sp[0] + ": " + sp[1]; });
+    if (unit) { const att = namaSemua("attachment"); if (att.length) teks += "\nAttachment tersedia: " + att.join(", "); }
+    else {
+      if ((x.industri || []).length) teks += "\nCocok untuk: " + x.industri.join(", ");
+      teks += "\nBisa dipasang di semua unit Xinyuan";
+    }
+    (x.lampiran || []).forEach(function (l) { teks += "\n" + l.jenis + ": " + l.url; });
+    teks += "\n\nPT Garuda Excavindo Nusantara";
+    window.open("https://wa.me/?text=" + encodeURIComponent(teks), "_blank");
+  }
+
+  // ----- Foto kunjungan dengan cap waktu, lokasi, dan peta -----
+  const HARI = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
+  function dua(n) { return (n < 10 ? "0" : "") + n; }
+  function teksWaktu(d) {
+    return dua(d.getDate()) + "/" + dua(d.getMonth() + 1) + "/" + d.getFullYear() + " (" + HARI[d.getDay()] + ") " + dua(d.getHours()) + ":" + dua(d.getMinutes()) + " WIB";
+  }
+  function namaPengguna() { return user.sl ? user.sl.nama : (user.sp ? user.sp.nama : ""); }
+
+  function muatGambar(src) {
+    return new Promise(function (ok, gagal) {
+      const g = new Image();
+      g.onload = function () { ok(g); };
+      g.onerror = function () { gagal(new Error("Gambar tidak bisa dibaca")); };
+      g.src = src;
+    });
+  }
+
+  // Memecah teks panjang jadi beberapa baris sesuai lebar
+  function bungkus(g, teks, lebar, maksBaris) {
+    const kata = String(teks || "").split(" "), baris = [];
+    let isi = "";
+    kata.forEach(function (k) {
+      const coba = isi ? isi + " " + k : k;
+      if (g.measureText(coba).width > lebar && isi) { baris.push(isi); isi = k; } else { isi = coba; }
+    });
+    if (isi) baris.push(isi);
+    if (baris.length > maksBaris) {
+      const sisa = baris.slice(0, maksBaris);
+      let akhir = sisa[maksBaris - 1];
+      while (akhir.length > 1 && g.measureText(akhir + "…").width > lebar) akhir = akhir.slice(0, -1);
+      sisa[maksBaris - 1] = akhir + "…";
+      return sisa;
+    }
+    return baris;
+  }
+
+  async function pilihFotoSales() {
+    const file = $("fotoSales").files[0];
+    if (!file) return;
+    if (!lokasi) {
+      $("fotoSales").value = "";
+      tampil("Ambil lokasi dulu sebelum foto, supaya cap lokasinya terisi.", "gagal"); return;
+    }
+    // Tolak foto lama dari galeri (lebih dari 10 menit)
+    if (file.lastModified && Date.now() - file.lastModified > 10 * 60 * 1000) {
+      $("fotoSales").value = "";
+      tampil("Foto harus diambil langsung dari kamera saat kunjungan, bukan dari galeri.", "gagal"); return;
+    }
+    sembunyiPesan();
+    $("teksTombolFoto").textContent = "Memproses foto...";
+    try {
+      const url = URL.createObjectURL(file);
+      fotoAsli = await muatGambar(url);
+      URL.revokeObjectURL(url);
+      waktuFoto = new Date();
+      if (!logoGambar) { try { logoGambar = await muatGambar("icon-192.png"); } catch (e) { logoGambar = null; } }
+      await buatCap();
+      $("teksTombolFoto").textContent = "Foto ulang";
+    } catch (err) {
+      fotoAsli = null; fotoCap = ""; $("previewSales").hidden = true; $("simpanFotoForm").hidden = true;
+      $("teksTombolFoto").textContent = "Buka kamera";
+      tampil("Foto tidak bisa dibaca. Coba foto ulang.", "gagal");
+    }
+  }
+
+  // Menggambar foto + panel cap di bagian bawah
+  async function buatCap() {
+    if (!fotoAsli || !lokasi) return;
+    const skala = Math.min(1, 1280 / Math.max(fotoAsli.width, fotoAsli.height));
+    const W = Math.round(fotoAsli.width * skala), H = Math.round(fotoAsli.height * skala);
+    const c = document.createElement("canvas"); c.width = W; c.height = H;
+    const g = c.getContext("2d");
+    g.drawImage(fotoAsli, 0, 0, W, H);
+
+    const u = Math.min(W, H) / 100;            // satuan ukuran, ikut besar foto
+    const huruf = "-apple-system, Roboto, Arial, sans-serif";
+    const lebarPeta = petaGambar ? Math.round(u * 30) : 0;
+    const x = lebarPeta + Math.round(u * 3), lebar = W - x - u * 3;
+    const ukuranLogo = logoGambar ? u * 4 : 0;
+    const nama = $("nama").value.trim() || "Customer";
+
+    // 1) Susun baris-baris teks dulu, supaya tinggi panel pas dengan isinya
+    const baris = [];
+    function tambah(teks, tebal, ukuran, jarak, maks, kiri) {
+      g.font = tebal + " " + (u * ukuran) + "px " + huruf;
+      bungkus(g, teks, lebar - (kiri || 0), maks).forEach(function (t) { baris.push({ t: t, f: g.font, j: u * jarak, kiri: kiri || 0 }); });
+    }
+    tambah(lokasi.alamat || "Lokasi tidak diketahui", "500", 2.6, 3.3, 2);
+    tambah(lokasi.lat.toFixed(5) + ", " + lokasi.lng.toFixed(5), "500", 2.6, 4.3);
+    if (lokasi.wilayah) tambah(lokasi.wilayah, "700", 4.6, 5.6, 2);
+    tambah(teksWaktu(waktuFoto), "600", 3.8, 5.2, 1);
+    tambah(namaPengguna() + " · " + nama, "600", 3.1, 4, 1, ukuranLogo ? ukuranLogo + u * 1.2 : 0);
+    let tinggiTeks = u * 5;   // jarak atas + bawah
+    baris.forEach(function (b) { tinggiTeks += b.j; });
+    const tinggiPanel = Math.round(Math.max(u * 30, tinggiTeks)), y0 = H - tinggiPanel;
+
+    // 2) Gambar panel gelap dan peta mini di kiri
+    g.fillStyle = "rgba(0,0,0,.5)";
+    g.fillRect(0, y0, W, tinggiPanel);
+    if (petaGambar) {
+      // Peta dipotong di tengah supaya tidak gepeng
+      const rasio = lebarPeta / tinggiPanel;
+      let sh = petaGambar.height, sw = sh * rasio;
+      if (sw > petaGambar.width) { sw = petaGambar.width; sh = sw / rasio; }
+      g.drawImage(petaGambar, (petaGambar.width - sw) / 2, (petaGambar.height - sh) / 2, sw, sh, 0, y0, lebarPeta, tinggiPanel);
+    }
+
+    // 3) Tulis teksnya (baris terakhir diberi logo di depannya)
+    g.fillStyle = "#fff"; g.textBaseline = "top";
+    g.shadowColor = "rgba(0,0,0,.6)"; g.shadowBlur = u * 0.6;
+    let y = y0 + u * 2.5;
+    baris.forEach(function (b, i) {
+      if (i === baris.length - 1 && logoGambar) {
+        g.shadowBlur = 0;
+        g.drawImage(logoGambar, x, y - u * 0.4, ukuranLogo, ukuranLogo);
+        g.shadowBlur = u * 0.6;
+      }
+      g.font = b.f;
+      g.fillText(b.t, x + b.kiri, y);
+      y += b.j;
+    });
+
+    try {
+      fotoCap = c.toDataURL("image/jpeg", 0.8);
+    } catch (e) {
+      // Kalau logo tidak boleh dipakai (misal file dibuka langsung dari komputer), ulang tanpa logo
+      if (logoGambar) { logoGambar = null; return buatCap(); }
+      throw e;
+    }
+    $("previewSales").src = fotoCap;
+    $("previewSales").hidden = false;
+    $("simpanFotoForm").hidden = false;
+  }
+
+  // Ubah data URL foto jadi file supaya bisa dibagikan
+  function dataKeFile(dataUrl, namaFile) {
+    const isi = atob(dataUrl.split(",")[1]), b = new Uint8Array(isi.length);
+    for (let i = 0; i < isi.length; i++) b[i] = isi.charCodeAt(i);
+    return new File([b], namaFile, { type: "image/jpeg" });
+  }
+
+  async function bagikanWA() {
+    if (!bagikanData) return;
+    const file = dataKeFile(bagikanData.foto, bagikanData.namaFile);
+    // HP modern: buka menu bagikan, lalu pilih WhatsApp
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      try { await navigator.share({ files: [file], text: bagikanData.teks }); }
+      catch (err) { if (err.name !== "AbortError") tampil("Menu bagikan tidak bisa dibuka. Coba lagi.", "gagal"); }
+      return;
+    }
+    // Browser lama: unduh foto, lalu buka WhatsApp dengan teksnya
+    unduhFoto(bagikanData.foto, bagikanData.namaFile);
+    window.open("https://wa.me/?text=" + encodeURIComponent(bagikanData.teks), "_blank");
+    tampil("Foto sudah diunduh. Lampirkan foto itu di WhatsApp yang terbuka.", "sukses");
+  }
+
+  // Nama file foto: kunjungan_pt-contoh_20261126-0815.jpg
+  function namaFileFoto(nama, waktu) {
+    const w = waktu || new Date();
+    return "kunjungan_" + (String(nama || "customer").replace(/[^a-z0-9]+/gi, "-").toLowerCase().slice(0, 40) || "customer") + "_" +
+      w.getFullYear() + dua(w.getMonth() + 1) + dua(w.getDate()) + "-" + dua(w.getHours()) + dua(w.getMinutes()) + ".jpg";
+  }
+
+  function unduhFoto(dataUrl, namaFile) {
+    const a = document.createElement("a");
+    a.href = dataUrl; a.download = namaFile;
+    document.body.appendChild(a); a.click(); a.remove();
+  }
+
+  // Simpan foto ke galeri HP.
+  // iPhone: lewat menu bagikan, lalu pilih "Simpan Gambar".
+  // Android: foto diunduh ke folder Download (muncul di Galeri, album Download).
+  async function simpanKeGaleri(dataUrl, namaFile) {
+    if (!dataUrl) return;
+    const iPhone = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    const file = dataKeFile(dataUrl, namaFile);
+    if (iPhone && navigator.canShare && navigator.canShare({ files: [file] })) {
+      tampil("Pilih \"Simpan Gambar\" supaya foto masuk ke aplikasi Foto.", "sukses");
+      try { await navigator.share({ files: [file] }); }
+      catch (err) { if (err.name !== "AbortError") tampil("Menu simpan tidak bisa dibuka. Coba lagi.", "gagal"); }
+      return;
+    }
+    unduhFoto(dataUrl, namaFile);
+    tampil("Foto tersimpan di folder Download. Buka Galeri, album Download.", "sukses");
+  }
+
+  // ----- Pantau sales: semua orang lihat semua sales -----
+  function bukaPantau() {
+    $("subPantau").textContent = "Semua sales. Hitungan minggu mulai hari Senin.";
+    lihat("vPantau", "mode-pantau");
+    pilihPanel("ringkasan");
+    muatPantau();
+  }
+
+  // Pindah antara Ringkasan dan Status Customer
+  function pilihPanel(p) {
+    const status = p === "status";
+    $("panelRingkasan").hidden = status;
+    $("panelStatus").hidden = !status;
+    $("tabRingkasan").classList.toggle("aktif", !status);
+    $("tabStatus").classList.toggle("aktif", status);
+    if (status && !dataCustomer) muatCustomer();
+  }
+
+  // ----- Status customer -----
+  async function muatCustomer() {
+    const daftar = $("daftarCustomer"), tombol = $("muatCustomer");
+    daftar.textContent = ""; daftar.appendChild(el("li", "kosong", "Memuat..."));
+    $("kotakStatus").textContent = ""; $("infoCustomer").textContent = "";
+    tombol.disabled = true;
+    try {
+      const res = await fetch(URL_SALES + "?aksi=customer&akses=" + encodeURIComponent(akses));
+      const data = await res.json();
+      tombol.disabled = false;
+      if (!data.ok) { if (!cekKodeMati(data)) tampil(data.pesan, "gagal"); daftar.textContent = ""; return; }
+      dataCustomer = data.data || [];
+      gambarCustomer();
+    } catch (err) {
+      tombol.disabled = false; daftar.textContent = "";
+      tampil("Data customer tidak bisa dimuat. Periksa internet.", "gagal");
+    }
+  }
+
+  function labelStatus(s) { return s ? s : "Belum ada status"; }
+  function kelasStatus(s) { return "st st-" + (DAFTAR_STATUS.indexOf(s) !== -1 ? s : "Belum"); }
+
+  function gambarCustomer() {
+    // Kotak jumlah per status (bisa diketuk untuk filter)
+    const wadah = $("kotakStatus"); wadah.textContent = "";
+    [""].concat(DAFTAR_STATUS).forEach(function (s) {
+      const jumlah = dataCustomer.filter(function (c) { return !s || c.status === s; }).length;
+      const b = el("button", "kotakSt" + (filterStatus === s ? " aktif" : ""));
+      b.type = "button";
+      b.appendChild(el("b", "", String(jumlah)));
+      b.appendChild(el("span", "", s || "Semua"));
+      b.addEventListener("click", function () { filterStatus = s; gambarCustomer(); });
+      wadah.appendChild(b);
+    });
+
+    // Daftar customer sesuai filter status dan kata pencarian
+    const cari = $("cariCustomer").value.trim().toLowerCase();
+    const hasil = dataCustomer.filter(function (c) {
+      return (!filterStatus || c.status === filterStatus) && (!cari || c.nama.toLowerCase().indexOf(cari) !== -1);
+    });
+    $("infoCustomer").textContent = "Menampilkan " + hasil.length + " customer. Ketuk untuk lihat perkembangannya.";
+    const daftar = $("daftarCustomer"); daftar.textContent = "";
+    if (hasil.length === 0) { daftar.appendChild(el("li", "kosong", "Tidak ada customer yang cocok.")); return; }
+    hasil.forEach(function (c) {
+      const li = el("li", "item bisaKlik");
+      const atas = el("div", "itemAtas");
+      atas.appendChild(el("span", kelasStatus(c.status), labelStatus(c.status).toUpperCase()));
+      atas.appendChild(el("span", "", "Terakhir " + c.terakhir));
+      li.appendChild(atas);
+      const judul = el("p", "itemJudul", c.nama);
+      const panah = el("span", "panah", "▼");
+      judul.appendChild(panah);
+      li.appendChild(judul);
+      li.appendChild(el("p", "itemIsi", (c.kebutuhan || "Kebutuhan belum diisi") + " · " + c.sales));
+
+      // Perjalanan status, muncul saat diketuk
+      const jejak = el("ol", "jejak"); jejak.hidden = true;
+      (c.riwayat || []).forEach(function (r) {
+        const baris = el("li");
+        baris.appendChild(el("span", "tgl", r.waktu));
+        baris.appendChild(el("span", kelasStatus(r.status), labelStatus(r.status)));
+        if (r.kebutuhan) baris.appendChild(el("span", "", r.kebutuhan));
+        jejak.appendChild(baris);
+      });
+      li.appendChild(jejak);
+      li.addEventListener("click", function () { jejak.hidden = !jejak.hidden; panah.textContent = jejak.hidden ? "▼" : "▲"; });
+      daftar.appendChild(li);
+    });
+  }
+
+  async function muatPantau() {
+    const wadah = $("ringkasanSales"), daftar = $("daftarKunjungan"), tombol = $("muatPantau");
+    wadah.textContent = ""; daftar.textContent = "";
+    wadah.appendChild(el("p", "kosong", "Memuat..."));
+    tombol.disabled = true;
+    try {
+      const res = await fetch(URL_SALES + "?aksi=pantau&akses=" + encodeURIComponent(akses));
+      const data = await res.json();
+      tombol.disabled = false; wadah.textContent = "";
+      if (!data.ok) { if (!cekKodeMati(data)) tampil(data.pesan, "gagal"); return; }
+      gambarPantau(data);
+    } catch (err) {
+      tombol.disabled = false; wadah.textContent = "";
+      tampil("Data sales tidak bisa dimuat. Periksa internet.", "gagal");
+    }
+  }
+
+  function gambarPantau(data) {
+    const wadah = $("ringkasanSales"), daftar = $("daftarKunjungan");
+    (data.ringkasan || []).forEach(function (r) {
+      const kartu = el("div", "kartuSales");
+      kartu.appendChild(el("h2", "", r.sales));
+      const stat = el("div", "statistik");
+      [["Hari ini", r.hariIni], ["Minggu ini", r.mingguIni], ["Bulan ini", r.bulanIni]].forEach(function (s) {
+        const kotak = el("div", "stat");
+        kotak.appendChild(el("b", "", String(s[1])));
+        kotak.appendChild(el("span", "", s[0]));
+        stat.appendChild(kotak);
+      });
+      kartu.appendChild(stat);
+      const industri = r.perIndustri || {};
+      if (Object.keys(industri).length) kartu.appendChild(el("p", "itemIsi", "Bulan ini per industri:"));
+      Object.keys(industri).forEach(function (n) { kartu.appendChild(el("span", "chip abu", n + " " + industri[n])); });
+      wadah.appendChild(kartu);
+    });
+    const terakhir = data.terakhir || [];
+    if (terakhir.length === 0) { daftar.appendChild(el("li", "kosong", "Belum ada kunjungan.")); return; }
+    terakhir.forEach(function (k) {
+      const li = el("li", "item");
+      const atas = el("div", "itemAtas");
+      atas.appendChild(el("span", "", k.sales + " · " + k.industri));
+      atas.appendChild(el("span", "", k.waktu));
+      li.appendChild(atas);
+      li.appendChild(el("p", "itemJudul", k.nama));
+      li.appendChild(el("p", "itemIsi", k.alamat));
+      daftar.appendChild(li);
+    });
+  }
+
+  // ----- Menghubungkan tombol -----
+  $("tombolLogin").addEventListener("click", login);
+  $("inputAkses").addEventListener("keydown", function (e) { if (e.key === "Enter") login(); });
+  $("tombolMata").addEventListener("click", function () { aturMata($("inputAkses").type === "password"); });
+  $("tombolKembali").addEventListener("click", tombolBeranda);
+  $("tombolLogout").addEventListener("click", function () { kembaliKeLogin(); });
+  $("ubinKeluar").addEventListener("click", function () { if (bolehBuka("sp")) masukMenu(function () { bukaSparepart("Keluar"); }); });
+  $("ubinMasuk").addEventListener("click", function () { if (bolehBuka("sp")) masukMenu(function () { bukaSparepart("Masuk"); }); });
+  $("ubinRiwayat").addEventListener("click", function () { if (bolehBuka("sp")) masukMenu(bukaRiwayat); });
+  $("ubinSales").addEventListener("click", function () { if (bolehBuka("sl")) masukMenu(bukaSales); });
+  $("ubinPantau").addEventListener("click", function () { if (bolehBuka("sl")) masukMenu(bukaPantau); });
+  $("ubinKatalog").addEventListener("click", function () { if (bolehBuka("sl")) masukMenu(bukaKatalog); });
+  $("tabUnit").addEventListener("click", function () { pilihJenisKatalog("unit"); });
+  $("tabAttachment").addEventListener("click", function () { pilihJenisKatalog("attachment"); });
+  $("cariKatalog").addEventListener("input", gambarKatalog);
+  $("tutupDetail").addEventListener("click", function () { history.back(); });
+  $("bagikanKatalog").addEventListener("click", bagikanKatalog);
+  $("tabKeluar").addEventListener("click", function () { aturMode("Keluar"); });
+  $("tabMasuk").addEventListener("click", function () { aturMode("Masuk"); });
+  $("tombolScan").addEventListener("click", mulaiScan);
+  $("kode").addEventListener("change", cekKode);
+  $("foto").addEventListener("change", pratinjauFoto);
+  $("kirimSp").addEventListener("click", kirimSparepart);
+  $("muatRiwayat").addEventListener("click", muatRiwayat);
+  $("tabTransaksi").addEventListener("click", function () { pilihPanelRiwayat("transaksi"); });
+  $("tabTerlaris").addEventListener("click", function () { pilihPanelRiwayat("terlaris"); });
+  document.querySelectorAll(".filterPeriode").forEach(function (b) {
+    b.addEventListener("click", function () { muatTerlaris(b.dataset.periode); });
+  });
+  document.querySelectorAll(".filterRiwayat").forEach(function (b) {
+    b.addEventListener("click", function () { filterJenis = b.dataset.jenis; gambarRiwayat(); });
+  });
+  $("tombolLokasi").addEventListener("click", ambilLokasi);
+  $("kirimSales").addEventListener("click", kirimSalesForm);
+  $("fotoSales").addEventListener("change", pilihFotoSales);
+  $("nama").addEventListener("change", function () { if (fotoAsli) buatCap(); });
+  $("tombolBagikan").addEventListener("click", bagikanWA);
+  $("tombolSimpan").addEventListener("click", function () { if (bagikanData) simpanKeGaleri(bagikanData.foto, bagikanData.namaFile); });
+  $("simpanFotoForm").addEventListener("click", function () { simpanKeGaleri(fotoCap, namaFileFoto($("nama").value.trim(), waktuFoto)); });
+  $("tombolBaru").addEventListener("click", function () { kosongkanSales(); window.scrollTo(0, 0); });
+  $("muatPantau").addEventListener("click", muatPantau);
+  $("tabRingkasan").addEventListener("click", function () { pilihPanel("ringkasan"); });
+  $("tabStatus").addEventListener("click", function () { pilihPanel("status"); });
+  $("cariCustomer").addEventListener("input", function () { if (dataCustomer) gambarCustomer(); });
+  $("muatCustomer").addEventListener("click", muatCustomer);
+
+  if ("serviceWorker" in navigator) { navigator.serviceWorker.register("sw.js").catch(function () {}); }
+
+  // Login otomatis kalau kode sudah tersimpan di HP ini
+  const tersimpan = LS.get("akses");
+  if (tersimpan) { $("inputAkses").value = tersimpan; login(); }
+</script>
+</body>
+</html>
